@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">FakeGps</string>
+
+    <string name="system_settings_title">System settings change required</string>
+    <string name="system_settings_message">This application is not set as a default mocking location application.\nOpen \'Developer Options\'->\'Select mock location app\' and select FakeGps as mocking app. Finally restart FakeGps application.</string>
+    <string name="system_setting_ok">Go to Developer options</string>
+    <string name="system_setting_cancel">Cancel</string>
+
+    <string name="permission_setting_message">This application requires permission to device\'s location. Please add it in application settings and restart FakeGps application</string>
+    <string name="permission_setting_ok">Go to application settings</string>
+    <string name="permission_setting_cancel">Cancel</string>
+
 </resources>

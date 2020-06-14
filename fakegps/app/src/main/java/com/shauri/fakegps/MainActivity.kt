@@ -1,152 +1,153 @@
 package com.shauri.fakegps
 
 import android.Manifest
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
-import android.os.SystemClock
+import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.huawei.hms.location.FusedLocationProviderClient
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.disposables.Disposable
+import com.huawei.hms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.api.IGeoPoint
 import org.osmdroid.config.Configuration
+import org.osmdroid.config.Configuration.*
+import org.osmdroid.events.DelayedMapListener
+import org.osmdroid.events.MapListener
+import org.osmdroid.events.ScrollEvent
+import org.osmdroid.events.ZoomEvent
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import java.io.File
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
-    lateinit var mMockLocation: Location;
-    lateinit var mLocationManager: LocationManager
+    private val testProvider = "gpstest"
     private val RECORD_REQUEST_CODE = 101
+    private var mocking = false
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private var mocking=false
-    private var disposable:Disposable?=null;
-    val interval: Observable<Long> = Observable.interval(1, TimeUnit.SECONDS)
-    var locationProvider:FusedLocationProviderClient?=null;
+    val receiver = FakeGpsBroadcastReceiver(Runnable {
+        mocking = false
+        handleMocking()
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        val filter = IntentFilter()
+        filter.addAction(STOP_MOCKING_ACTION)
+        this.registerReceiver(receiver, filter)
         setupPermissions();
-
         play_button.setOnClickListener {
             mocking = !mocking
-            if(mocking){
-                play_button.setBackgroundResource(R.drawable.ic_baseline_pause_circle_outline_24)
-                startMocking()
-                Log.d("CCC","mocking stared")
-            }
-            else{
-                disposable?.dispose()
-                locationProvider?.setMockMode(false)
-                Log.d("CCC","mocking stoped")
-                play_button.setBackgroundResource(R.drawable.ic_baseline_play_circle_outline_24)
-            }
+            handleMocking()
         }
-        initMap(mapView)
+
+    }
+
+    private fun startSevice() {
+        var intent = Intent(this, GpsService::class.java)
+        val point = getPoint()
+        intent.putExtra("lat", point.latitude)
+        intent.putExtra("lon", point.longitude)
+        startService(intent)
+    }
+
+    private fun handleMocking() {
+        if (mocking) {
+            play_button.setBackgroundResource(R.drawable.ic_baseline_pause_circle_outline_24)
+            startSevice()
+            Log.d("CCC", "mocking stared")
+        } else {
+            stopService(
+                Intent(this, GpsService::class.java)
+            )
+            Log.d("CCC", "mocking stoped")
+            play_button.setBackgroundResource(R.drawable.ic_baseline_play_circle_outline_24)
+        }
     }
 
     private fun setupPermissions() {
-        val permission = ContextCompat.checkSelfPermission(this,
-            Manifest.permission.ACCESS_FINE_LOCATION)
+        val permission = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
+            ActivityCompat.requestPermissions(
+                this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                RECORD_REQUEST_CODE)
-        }
-        else{
-            init();
-        }
-    }
-
-
-    private fun init(){
-        locationProvider = FusedLocationProviderClient(this)
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
+                RECORD_REQUEST_CODE
+            )
+        } else {
+            initLocation()
         }
     }
 
-    private fun startMocking(){
 
+    private fun initLocation() {
+        val lm: LocationManager = getSystemService(
+            Context.LOCATION_SERVICE
+        ) as LocationManager
+        try {
+            lm.addTestProvider(
+                testProvider, false, false, false, false, false,
+                true, true, 0, 5
+            )
+            lm.removeTestProvider(testProvider)
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            initMap(mapView)
+        } catch (e: SecurityException) {
 
-
-        locationProvider?.setMockMode(true)
-        val providerName ="shauriFakeGps"
-        val loc = Location(providerName)
-        val mockLocation = Location(providerName) // a string
-
-
-        mockLocation.altitude = loc.altitude
-        mockLocation.accuracy = 1f
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mockLocation.bearingAccuracyDegrees = 0.1f
-            mockLocation.verticalAccuracyMeters = 0.1f
-            mockLocation.speedAccuracyMetersPerSecond = 0.01f
+            AlertDialog.Builder(this)
+                .setTitle(R.string.system_settings_title)
+                .setMessage(R.string.system_settings_message)
+                .setPositiveButton(
+                    R.string.system_setting_ok,
+                    DialogInterface.OnClickListener { dialog, which ->
+                        startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                    })
+                .setNegativeButton(R.string.system_setting_cancel, { d, w -> })
+                .show()
         }
-//        locationManager.setTestProviderLocation(providerName, mockLocation)
-       // locationProvider.setMockLocation(mockLocation)
-//        mLocationManager =
-//            getSystemService(Context.LOCATION_SERVICE) as LocationManager;
-//        if (mLocationManager.getProvider(providerName) != null) {
-//            mLocationManager.removeTestProvider(providerName);
-//        }
-//
-//
-//        mLocationManager.addTestProvider(providerName, true, false, false, false, true, true, true,
-//            Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
-//        mLocationManager.setTestProviderEnabled(providerName, true);
 
-
-
-        disposable=interval.subscribe {
-            Log.d("CCC","mocking ...");
-            val geoPoint = getPoint()
-            mockLocation.latitude = geoPoint.latitude
-            mockLocation.longitude = geoPoint.longitude
-            mockLocation.time = System.currentTimeMillis()
-            mockLocation.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
-            locationProvider?.setMockLocation(mockLocation)
-        }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
         when (requestCode) {
             RECORD_REQUEST_CODE -> {
-
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-
+                    AlertDialog.Builder(this)
+                        .setMessage(R.string.permission_setting_message)
+                        .setPositiveButton(R.string.permission_setting_ok) { a, b ->
+                            val intent =
+                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            val uri: Uri = Uri.fromParts("package", packageName, null)
+                            intent.data = uri
+                            startActivity(intent)
+                        }
+                        .setNegativeButton(R.string.permission_setting_cancel,{a,b->})
+                        .show()
 
                 } else {
-                    init();
+                    initLocation()
                 }
             }
         }
@@ -154,11 +155,13 @@ class MainActivity : AppCompatActivity() {
 
 
     fun initMap(mMapView: MapView) {
-        val basePath = File(cacheDir.absolutePath, "osmdroid")
-        Configuration.getInstance().osmdroidBasePath = basePath
-        val tileCache = File(Configuration.getInstance().osmdroidBasePath.absolutePath, "tile")
-        Configuration.getInstance().osmdroidTileCache = tileCache
-        Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
+//        val basePath = File(cacheDir.absolutePath, "osmdroid")
+//        Configuration.getInstance().osmdroidBasePath = basePath
+//        val tileCache = File(Configuration.getInstance().osmdroidBasePath.absolutePath, "tile")
+//        Configuration.getInstance().osmdroidTileCache = tileCache
+        getInstance().userAgentValue = BuildConfig.APPLICATION_ID
+        getInstance().osmdroidBasePath = File(this.getFilesDir().absolutePath + "/osmdroid/base");
+        getInstance().osmdroidTileCache = File(this.getFilesDir().absolutePath + "/osmdroid/cache");
         mMapView.setUseDataConnection(true)
         mMapView.setTileSource(TileSourceFactory.MAPNIK)
         mMapView.isClickable = true
@@ -168,10 +171,29 @@ class MainActivity : AppCompatActivity() {
         mMapView.isTilesScaledToDpi = true
         mMapView.overlays.clear()
         mMapView.controller.setZoom(16.0)
-        mMapView.controller.animateTo(GeoPoint(52.156930, 21.065316))
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    mMapView.controller.animateTo(GeoPoint(location.latitude, location.longitude))
+                }
+            }
+        mMapView.addMapListener(DelayedMapListener(object : MapListener {
+            override fun onScroll(scrollEvent: ScrollEvent): Boolean {
+                if (mocking) {
+                    startSevice()
+                }
+                return true
+            }
+
+            override fun onZoom(zoomEvent: ZoomEvent): Boolean {
+
+                return true
+            }
+        }, 1000))
     }
 
-    fun getPoint():IGeoPoint{
+    fun getPoint(): IGeoPoint {
         val r: Rect = mapView.projection.getScreenRect()
         val y: Int = pin.getBottom()
         val x = r.right / 2
@@ -180,6 +202,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        locationProvider?.setMockMode(false)
+        unregisterReceiver(receiver)
     }
+
+
 }
