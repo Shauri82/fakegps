@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.huawei.hms.location.FusedLocationProviderClient
 import com.huawei.hms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_main.*
@@ -56,6 +57,10 @@ class MainActivity : AppCompatActivity() {
             handleMocking()
         }
 
+        gps_button.setOnClickListener{
+
+        }
+
     }
 
     private fun startSevice() {
@@ -68,7 +73,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleMocking() {
         if (mocking) {
-            play_button.setBackgroundResource(R.drawable.ic_baseline_pause_circle_outline_24)
+            play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_baseline_pause_24,null),null,null,null);
+            play_button.setText(R.string.stop)
+            play_button.setBackgroundResource(R.color.colorRed)
             startSevice()
             Log.d("CCC", "mocking stared")
         } else {
@@ -76,7 +83,9 @@ class MainActivity : AppCompatActivity() {
                 Intent(this, GpsService::class.java)
             )
             Log.d("CCC", "mocking stoped")
-            play_button.setBackgroundResource(R.drawable.ic_baseline_play_circle_outline_24)
+            play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_baseline_play_arrow_24,null),null,null,null);
+            play_button.setText(R.string.start)
+            play_button.setBackgroundResource(R.color.colorGreen)
         }
     }
 
@@ -155,10 +164,6 @@ class MainActivity : AppCompatActivity() {
 
 
     fun initMap(mMapView: MapView) {
-//        val basePath = File(cacheDir.absolutePath, "osmdroid")
-//        Configuration.getInstance().osmdroidBasePath = basePath
-//        val tileCache = File(Configuration.getInstance().osmdroidBasePath.absolutePath, "tile")
-//        Configuration.getInstance().osmdroidTileCache = tileCache
         getInstance().userAgentValue = BuildConfig.APPLICATION_ID
         getInstance().osmdroidBasePath = File(this.getFilesDir().absolutePath + "/osmdroid/base");
         getInstance().osmdroidTileCache = File(this.getFilesDir().absolutePath + "/osmdroid/cache");

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "997758521026",
+    "firebase_url": "https://fakegps-39f7d.firebaseio.com",
+    "project_id": "fakegps-39f7d",
+    "storage_bucket": "fakegps-39f7d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997758521026:android:f7f4e4b6774b39225fb55b",
+        "android_client_info": {
+          "package_name": "com.shauri.fakegps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997758521026-dsnm9ftv5kj94krks6eqp45q6e27abe2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOSgxAbB4mrWqcbuZl1RKP1IrSzQhY9Nc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997758521026-dsnm9ftv5kj94krks6eqp45q6e27abe2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

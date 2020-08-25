@@ -10,4 +10,6 @@
     <string name="permission_setting_ok">Go to application settings</string>
     <string name="permission_setting_cancel">Cancel</string>
 
+    <string name="start">Start mocking</string>
+    <string name="stop">Stop mocking</string>
 </resources>

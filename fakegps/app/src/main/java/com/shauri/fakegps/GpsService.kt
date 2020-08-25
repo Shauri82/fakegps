@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.Rect
 import android.location.Location
 import android.os.Build
 import android.os.IBinder
@@ -15,12 +14,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.huawei.hms.location.FusedLocationProviderClient
-import com.huawei.hms.location.LocationCallback
-import com.huawei.hms.location.LocationResult
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_main.*
-import org.osmdroid.api.IGeoPoint
 import java.util.concurrent.TimeUnit
 
 
@@ -120,18 +115,7 @@ class GpsService: Service() {
             mockLocation.verticalAccuracyMeters = 0.1f
             mockLocation.speedAccuracyMetersPerSecond = 0.01f
         }
-//        locationManager.setTestProviderLocation(providerName, mockLocation)
-        // locationProvider.setMockLocation(mockLocation)
-//        mLocationManager =
-//            getSystemService(Context.LOCATION_SERVICE) as LocationManager;
-//        if (mLocationManager.getProvider(providerName) != null) {
-//            mLocationManager.removeTestProvider(providerName);
-//        }
-//
-//
-//        mLocationManager.addTestProvider(providerName, true, false, false, false, true, true, true,
-//            Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
-//        mLocationManager.setTestProviderEnabled(providerName, true);
+
 
 
         disposable = interval.subscribe {
