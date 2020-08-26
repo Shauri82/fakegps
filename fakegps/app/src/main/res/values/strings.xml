@@ -12,4 +12,7 @@
 
     <string name="start">Start mocking</string>
     <string name="stop">Stop mocking</string>
+
+    <string name="version">New app version available!. Please upgrade your app to continue.</string>
+    <string name="close">Go to AppGallery</string>
 </resources>

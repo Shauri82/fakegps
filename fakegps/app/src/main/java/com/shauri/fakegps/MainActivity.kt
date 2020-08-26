@@ -13,7 +13,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -23,8 +22,7 @@ import com.huawei.hms.location.FusedLocationProviderClient
 import com.huawei.hms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.api.IGeoPoint
-import org.osmdroid.config.Configuration
-import org.osmdroid.config.Configuration.*
+import org.osmdroid.config.Configuration.getInstance
 import org.osmdroid.events.DelayedMapListener
 import org.osmdroid.events.MapListener
 import org.osmdroid.events.ScrollEvent
@@ -38,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private val testProvider = "gpstest"
     private val RECORD_REQUEST_CODE = 101
     private var mocking = false
+    private val firebase = FirebaseConfig()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     val receiver = FakeGpsBroadcastReceiver(Runnable {
@@ -51,17 +50,29 @@ class MainActivity : AppCompatActivity() {
         val filter = IntentFilter()
         filter.addAction(STOP_MOCKING_ACTION)
         this.registerReceiver(receiver, filter)
-        setupPermissions();
+        checkVersion()
         play_button.setOnClickListener {
             mocking = !mocking
             handleMocking()
         }
-
-        gps_button.setOnClickListener{
-
-        }
-
     }
+
+
+    private fun checkVersion() {
+        if (needUpgrade(BuildConfig.VERSION_NAME, firebase.getMinVer())) {
+            AlertDialog.Builder(this)
+                .setMessage(R.string.version)
+                .setPositiveButton(
+                    R.string.close
+                ) { _, _ ->
+                    finish()
+                }
+                .show()
+        } else {
+            setupPermissions()
+        }
+    }
+
 
     private fun startSevice() {
         var intent = Intent(this, GpsService::class.java)
@@ -73,7 +84,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleMocking() {
         if (mocking) {
-            play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_baseline_pause_24,null),null,null,null);
+            play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                ResourcesCompat.getDrawable(
+                    getResources(),
+                    R.drawable.ic_baseline_pause_24,
+                    null
+                ), null, null, null
+            );
             play_button.setText(R.string.stop)
             play_button.setBackgroundResource(R.color.colorRed)
             startSevice()
@@ -83,7 +100,13 @@ class MainActivity : AppCompatActivity() {
                 Intent(this, GpsService::class.java)
             )
             Log.d("CCC", "mocking stoped")
-            play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_baseline_play_arrow_24,null),null,null,null);
+            play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                ResourcesCompat.getDrawable(
+                    getResources(),
+                    R.drawable.ic_baseline_play_arrow_24,
+                    null
+                ), null, null, null
+            );
             play_button.setText(R.string.start)
             play_button.setBackgroundResource(R.color.colorGreen)
         }
@@ -152,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                             intent.data = uri
                             startActivity(intent)
                         }
-                        .setNegativeButton(R.string.permission_setting_cancel,{a,b->})
+                        .setNegativeButton(R.string.permission_setting_cancel, { a, b -> })
                         .show()
 
                 } else {
