@@ -1,0 +1,35 @@
+{
+	"agcgw":{
+		"backurl":"connect-dre.dbankcloud.cn",
+		"url":"connect-dre.hispace.hicloud.com"
+	},
+	"client":{
+		"appType":"1",
+		"cp_id":"5190048000024230423",
+		"product_id":"736430079244612564",
+		"client_id":"436977331878232064",
+		"client_secret":"43B466E1D3694DBC72E0CD58007D57470B034C44E41B8F4ADF0204A71FECBF9C",
+		"project_id":"736430079244612564",
+		"app_id":"102788101",
+		"api_key":"CgB6e3x9nG8IglxFhiaP9b7GXlWoq/0wDDJoh2ZD2wLOzWsfSeG5nCPgb5dUpmEzAYGZ+xIySH8vYj+0iXxdqI//",
+		"package_name":"com.shauri.fakegps"
+	},
+	"service":{
+		"analytics":{
+			"collector_url":"datacollector-dre.dt.hicloud.com,datacollector-dre.dt.dbankcloud.cn",
+			"resource_id":"p1",
+			"channel_id":""
+		},
+		"search":{
+			"url":"https://search-dre.cloud.huawei.com"
+		},
+		"cloudstorage":{
+			"storage_url":"https://ops-dre.agcstorage.link"
+		},
+		"ml":{
+			"mlservice_url":"ml-api-dre.ai.dbankcloud.com,ml-api-dre.ai.dbankcloud.cn"
+		}
+	},
+	"region":"DE",
+	"configuration_version":"1.0"
+}

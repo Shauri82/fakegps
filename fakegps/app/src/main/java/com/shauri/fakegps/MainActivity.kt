@@ -2,42 +2,38 @@ package com.shauri.fakegps
 
 import android.Manifest
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.graphics.Rect
-import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.ui.AppBarConfiguration
+import com.google.android.material.navigation.NavigationView
 import com.huawei.hms.location.FusedLocationProviderClient
 import com.huawei.hms.location.LocationServices
+import com.huawei.hms.maps.*
 import kotlinx.android.synthetic.main.activity_main.*
-import org.osmdroid.api.IGeoPoint
-import org.osmdroid.config.Configuration.getInstance
-import org.osmdroid.events.DelayedMapListener
-import org.osmdroid.events.MapListener
-import org.osmdroid.events.ScrollEvent
-import org.osmdroid.events.ZoomEvent
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
     private val testProvider = "gpstest"
     private val RECORD_REQUEST_CODE = 101
     private var mocking = false
     private val firebase = FirebaseConfig()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var huaweiMap: HuaweiMap
 
     val receiver = FakeGpsBroadcastReceiver(Runnable {
         mocking = false
@@ -55,6 +51,14 @@ class MainActivity : AppCompatActivity() {
             mocking = !mocking
             handleMocking()
         }
+
+        setSupportActionBar(toolbar)
+
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
+        toolbar.setNavigationOnClickListener { v: View? ->
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+        tvVersion.setText("v. "+BuildConfig.VERSION_NAME)
     }
 
 
@@ -76,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startSevice() {
         var intent = Intent(this, GpsService::class.java)
-        val point = getPoint()
+        val point = huaweiMap.cameraPosition.target
         intent.putExtra("lat", point.latitude)
         intent.putExtra("lon", point.longitude)
         startService(intent)
@@ -131,6 +135,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initLocation() {
+        initMap()
         val lm: LocationManager = getSystemService(
             Context.LOCATION_SERVICE
         ) as LocationManager
@@ -141,17 +146,17 @@ class MainActivity : AppCompatActivity() {
             )
             lm.removeTestProvider(testProvider)
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            initMap(mapView)
+
         } catch (e: SecurityException) {
 
             AlertDialog.Builder(this)
                 .setTitle(R.string.system_settings_title)
                 .setMessage(R.string.system_settings_message)
                 .setPositiveButton(
-                    R.string.system_setting_ok,
-                    DialogInterface.OnClickListener { dialog, which ->
-                        startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
-                    })
+                    R.string.system_setting_ok
+                ) { dialog, which ->
+                    startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                }
                 .setNegativeButton(R.string.system_setting_cancel, { d, w -> })
                 .show()
         }
@@ -186,47 +191,45 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun initMap(mMapView: MapView) {
-        getInstance().userAgentValue = BuildConfig.APPLICATION_ID
-        getInstance().osmdroidBasePath = File(this.getFilesDir().absolutePath + "/osmdroid/base");
-        getInstance().osmdroidTileCache = File(this.getFilesDir().absolutePath + "/osmdroid/cache");
-        mMapView.setUseDataConnection(true)
-        mMapView.setTileSource(TileSourceFactory.MAPNIK)
-        mMapView.isClickable = true
-        mMapView.setBuiltInZoomControls(false)
-        mMapView.isTilesScaledToDpi = true;
-        mMapView.setMultiTouchControls(true)
-        mMapView.isTilesScaledToDpi = true
-        mMapView.overlays.clear()
-        mMapView.controller.setZoom(16.0)
+    fun initMap() {
+        val mapFragment = fragmentManager.findFragmentById(R.id.mapView) as MapFragment
+        mapFragment.getMapAsync { map ->
+            huaweiMap = map
+            map.isMyLocationEnabled = true
+            map.uiSettings.isMyLocationButtonEnabled = true
+            map.uiSettings.isCompassEnabled = true
+            map.uiSettings.isRotateGesturesEnabled = true
+            map.uiSettings.isScrollGesturesEnabled = true
+            map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
+            map.uiSettings.isTiltGesturesEnabled = true
+            map.uiSettings.isZoomControlsEnabled = true
+            map.uiSettings.isIndoorLevelPickerEnabled = true
+            map.uiSettings.isMapToolbarEnabled = true
+            map.uiSettings.isZoomGesturesEnabled = false
+            map.uiSettings.setAllGesturesEnabled(true)
 
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    mMapView.controller.animateTo(GeoPoint(location.latitude, location.longitude))
-                }
+            map.setOnMapLoadedCallback {
+                Log.d("CC4", "map loaded")
             }
-        mMapView.addMapListener(DelayedMapListener(object : MapListener {
-            override fun onScroll(scrollEvent: ScrollEvent): Boolean {
+//            fusedLocationClient.lastLocation
+//                .addOnSuccessListener { location: Location? ->
+//                    if (location != null) {
+//                        val params = CameraUpdateParam()
+//                        params.latLng = LatLng(location.latitude, location.longitude)
+//                        huaweiMap.animateCamera(CameraUpdate(params))
+//                        //mMapView.controller.animateTo(GeoPoint(location.latitude, location.longitude))
+//                    }
+//                }
+
+            huaweiMap.setOnCameraIdleListener {
                 if (mocking) {
                     startSevice()
                 }
-                return true
             }
+        }
 
-            override fun onZoom(zoomEvent: ZoomEvent): Boolean {
-
-                return true
-            }
-        }, 1000))
     }
 
-    fun getPoint(): IGeoPoint {
-        val r: Rect = mapView.projection.getScreenRect()
-        val y: Int = pin.getBottom()
-        val x = r.right / 2
-        return mapView.projection.fromPixels(x, y)
-    }
 
     override fun onDestroy() {
         super.onDestroy()

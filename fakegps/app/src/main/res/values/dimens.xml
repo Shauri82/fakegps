@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_default">8dp</dimen>
+    <dimen name="padding_large">32dp</dimen>
+    <dimen name="margin_default">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="pin_size">72dp</dimen>
+    <dimen name="pin_margin">36dp</dimen>
+    <dimen name="round">12dp</dimen>
+</resources>

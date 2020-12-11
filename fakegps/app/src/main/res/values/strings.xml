@@ -15,4 +15,7 @@
 
     <string name="version">New app version available!. Please upgrade your app to continue.</string>
     <string name="close">Go to AppGallery</string>
+
+    <string name="menu_move">Mock movement</string>
+    <string name="menu_about">About</string>
 </resources>
