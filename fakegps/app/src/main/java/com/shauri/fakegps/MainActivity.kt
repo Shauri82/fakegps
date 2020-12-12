@@ -5,11 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -17,16 +19,23 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.ui.AppBarConfiguration
 import com.google.android.material.navigation.NavigationView
 import com.huawei.hms.location.FusedLocationProviderClient
 import com.huawei.hms.location.LocationServices
-import com.huawei.hms.maps.*
+import com.huawei.hms.maps.CameraUpdate
+import com.huawei.hms.maps.HuaweiMap
+import com.huawei.hms.maps.MapFragment
+import com.huawei.hms.maps.model.CameraUpdateParam
+import com.huawei.hms.maps.model.LatLng
+import com.shauri.fakegps.ui.router.Router
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.nav_footer_main.*
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var appBarConfiguration: AppBarConfiguration
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    private val router = Router(this)
 
     private val testProvider = "gpstest"
     private val RECORD_REQUEST_CODE = 101
@@ -34,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private val firebase = FirebaseConfig()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var huaweiMap: HuaweiMap
+    private val compositeDisposable = CompositeDisposable()
 
     val receiver = FakeGpsBroadcastReceiver(Runnable {
         mocking = false
@@ -58,7 +68,9 @@ class MainActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { v: View? ->
             drawerLayout.openDrawer(GravityCompat.START)
         }
-        tvVersion.setText("v. "+BuildConfig.VERSION_NAME)
+        val v = getString(R.string.version_name)
+        tvVersion.setText(String.format(v, BuildConfig.VERSION_NAME))
+        nav_view.setNavigationItemSelectedListener(this)
     }
 
 
@@ -135,32 +147,53 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initLocation() {
-        initMap()
-        val lm: LocationManager = getSystemService(
-            Context.LOCATION_SERVICE
-        ) as LocationManager
-        try {
-            lm.addTestProvider(
-                testProvider, false, false, false, false, false,
-                true, true, 0, 5
-            )
-            lm.removeTestProvider(testProvider)
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        compositeDisposable.add(Completable.mergeArray(initMap(), initFusedLocation()).subscribe({
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    if (location != null) {
+                        val params = CameraUpdateParam()
+                        params.newLatLngZoom = CameraUpdateParam.NewLatLngZoom(
+                            LatLng(
+                                location.latitude,
+                                location.longitude
+                            ), 12.0f
+                        )
 
-        } catch (e: SecurityException) {
-
-            AlertDialog.Builder(this)
-                .setTitle(R.string.system_settings_title)
-                .setMessage(R.string.system_settings_message)
-                .setPositiveButton(
-                    R.string.system_setting_ok
-                ) { dialog, which ->
-                    startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                        huaweiMap.animateCamera(CameraUpdate(params))
+                    }
                 }
-                .setNegativeButton(R.string.system_setting_cancel, { d, w -> })
-                .show()
-        }
+        }, { }))
 
+    }
+
+    fun initFusedLocation(): Completable {
+        return Completable.create { emmiter ->
+            val lm: LocationManager = getSystemService(
+                Context.LOCATION_SERVICE
+            ) as LocationManager
+            try {
+                lm.addTestProvider(
+                    testProvider, false, false, false, false, false,
+                    true, true, 0, 5
+                )
+                lm.removeTestProvider(testProvider)
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+                emmiter.onComplete()
+
+            } catch (e: SecurityException) {
+                emmiter.onError(Exception())
+                AlertDialog.Builder(this)
+                    .setTitle(R.string.system_settings_title)
+                    .setMessage(R.string.system_settings_message)
+                    .setPositiveButton(
+                        R.string.system_setting_ok
+                    ) { dialog, which ->
+                        startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                    }
+                    .setNegativeButton(R.string.system_setting_cancel, { d, w -> })
+                    .show()
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -191,49 +224,51 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun initMap() {
-        val mapFragment = fragmentManager.findFragmentById(R.id.mapView) as MapFragment
-        mapFragment.getMapAsync { map ->
-            huaweiMap = map
-            map.isMyLocationEnabled = true
-            map.uiSettings.isMyLocationButtonEnabled = true
-            map.uiSettings.isCompassEnabled = true
-            map.uiSettings.isRotateGesturesEnabled = true
-            map.uiSettings.isScrollGesturesEnabled = true
-            map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
-            map.uiSettings.isTiltGesturesEnabled = true
-            map.uiSettings.isZoomControlsEnabled = true
-            map.uiSettings.isIndoorLevelPickerEnabled = true
-            map.uiSettings.isMapToolbarEnabled = true
-            map.uiSettings.isZoomGesturesEnabled = false
-            map.uiSettings.setAllGesturesEnabled(true)
+    fun initMap(): Completable {
+        return Completable.create { emmiter ->
 
-            map.setOnMapLoadedCallback {
-                Log.d("CC4", "map loaded")
-            }
-//            fusedLocationClient.lastLocation
-//                .addOnSuccessListener { location: Location? ->
-//                    if (location != null) {
-//                        val params = CameraUpdateParam()
-//                        params.latLng = LatLng(location.latitude, location.longitude)
-//                        huaweiMap.animateCamera(CameraUpdate(params))
-//                        //mMapView.controller.animateTo(GeoPoint(location.latitude, location.longitude))
-//                    }
-//                }
+            val mapFragment = fragmentManager.findFragmentById(R.id.mapView) as MapFragment
+            mapFragment.getMapAsync { map ->
+                huaweiMap = map
+                map.isMyLocationEnabled = true
+                map.uiSettings.isMyLocationButtonEnabled = true
+                map.uiSettings.isScrollGesturesEnabled = true
+                map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
+                map.uiSettings.isTiltGesturesEnabled = true
+                map.uiSettings.isZoomControlsEnabled = true
+                map.uiSettings.isIndoorLevelPickerEnabled = true
+                map.uiSettings.isMapToolbarEnabled = true
+                map.uiSettings.isZoomGesturesEnabled = false
+                map.uiSettings.setAllGesturesEnabled(true)
 
-            huaweiMap.setOnCameraIdleListener {
-                if (mocking) {
-                    startSevice()
+                map.setOnMapLoadedCallback {
+                    emmiter.onComplete()
+                }
+
+                huaweiMap.setOnCameraIdleListener {
+                    if (mocking) {
+                        startSevice()
+                    }
                 }
             }
         }
 
+
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.nav_home -> router.goToMoveScreen()
+            else->{}
+        }
+        return true;
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(receiver)
+        compositeDisposable.dispose()
     }
 
 

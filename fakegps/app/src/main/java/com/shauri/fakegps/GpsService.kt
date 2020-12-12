@@ -17,24 +17,26 @@ import com.huawei.hms.location.FusedLocationProviderClient
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 
-class GpsService: Service() {
+class GpsService : Service() {
     private val NOTIFICATION_CHANNEL_ID = "main_gps_service"
     private val NOTIFICATION_ID = 766234
     private var disposable: Disposable? = null;
     val interval: Observable<Long> = Observable.interval(1, TimeUnit.SECONDS)
     var locationProvider: FusedLocationProviderClient? = null;
 
-    var lat:Double?=null
-    var lon:Double?=null
+    var lat: Double? = null
+    var lon: Double? = null
 
-    override fun onBind(intent: Intent?): IBinder? =null
+
+    override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("CCC","on start command")
-        lat = intent?.getDoubleExtra("lat",0.0)
-        lon = intent?.getDoubleExtra("lon",0.0)
+        Log.d("CCC", "on start command")
+        lat = intent?.getDoubleExtra("lat", 0.0)
+        lon = intent?.getDoubleExtra("lon", 0.0)
         return START_STICKY
     }
 
@@ -45,9 +47,9 @@ class GpsService: Service() {
         startMocking()
     }
 
-    fun startNotification(){
+    fun startNotification() {
         createChannel()
-        val snoozeIntent =  Intent(STOP_MOCKING_ACTION);
+        val snoozeIntent = Intent(STOP_MOCKING_ACTION);
         val snoozePendingIntent: PendingIntent =
             PendingIntent.getBroadcast(this, 0, snoozeIntent, 0)
         var builder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
@@ -55,7 +57,7 @@ class GpsService: Service() {
             .setContentTitle("Mocking location....")
             .setAutoCancel(false)
             .setOngoing(true)
-            .addAction(R.drawable.btn_moreinfo,"Stop",snoozePendingIntent)
+            .addAction(R.drawable.btn_moreinfo, "Stop", snoozePendingIntent)
             .setContentIntent(bringToForegroundIntent())
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         with(NotificationManagerCompat.from(this)) {
@@ -74,15 +76,15 @@ class GpsService: Service() {
 
     private fun createChannel() {
 
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val channelName: CharSequence ="asdasd"
-            val notificationChannel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                channelName,
-                NotificationManager.IMPORTANCE_LOW
-            )
-            notificationManager.createNotificationChannel(notificationChannel)
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channelName: CharSequence = "asdasd"
+        val notificationChannel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            channelName,
+            NotificationManager.IMPORTANCE_LOW
+        )
+        notificationManager.createNotificationChannel(notificationChannel)
 
     }
 
@@ -92,9 +94,10 @@ class GpsService: Service() {
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-        return  PendingIntent.getActivity(
+        return PendingIntent.getActivity(
             this, 0,
-            notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
     }
 
@@ -117,8 +120,11 @@ class GpsService: Service() {
         }
 
 
-
+        Log.d("CCC", "mocking ...");
         disposable = interval.subscribe {
+
+            lat = lat?.plus(getDelta())
+            lon = lon?.plus(getDelta())
             Log.d("CCC", "mocking ..." + lat + " " + lon);
             mockLocation.latitude = lat ?: 0.0
             mockLocation.longitude = lon ?: 0.0
@@ -126,8 +132,12 @@ class GpsService: Service() {
             mockLocation.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
             locationProvider?.setMockLocation(mockLocation)
         }
+
+
     }
 
+
+    private fun getDelta() = Random.nextInt(-10, 10) / 10000.0
 
 
 }
