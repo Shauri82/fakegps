@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.huawei.agconnect'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
@@ -60,7 +61,12 @@ dependencies {
     implementation 'com.huawei.hms:maps:5.0.5.301'
     implementation 'com.huawei.hms:location:4.0.3.301'
     implementation("io.reactivex.rxjava3:rxkotlin:3.0.0")
-    implementation 'org.osmdroid:osmdroid-android:6.1.4'
+    def daggerVer = 2.27 // or latest version
+
+    implementation "com.google.dagger:dagger:$daggerVer"
+    implementation "com.google.dagger:dagger-android-support:$daggerVer"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVer"
+    kapt "com.google.dagger:dagger-compiler:$daggerVer"
     // Recommended: Add the Firebase SDK for Google Analytics.
     implementation 'com.google.firebase:firebase-analytics-ktx:18.0.0'
     implementation 'com.google.firebase:firebase-config-ktx:20.0.2'

@@ -1,4 +1,4 @@
-package com.shauri.fakegps
+package com.shauri.fakegps.view
 
 import android.content.Context
 import android.graphics.*
@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.shauri.fakegps.R
 
 
 class CircleSelectorView : View {
@@ -15,6 +16,8 @@ class CircleSelectorView : View {
     var arc = 90.0
     val radius = context.resources.getDimension(R.dimen.radius);
     var mapBitmap: Bitmap? = null
+
+    var listener: OnArcChangedListener? = null
 
     constructor(ctx: Context) : super(ctx) {
         init()
@@ -31,20 +34,20 @@ class CircleSelectorView : View {
         paintCircle.color = ContextCompat.getColor(context, R.color.colorPrimary)
         paintCircle.style = Paint.Style.STROKE
         paintCircle.strokeWidth = 3f
-        // LayoutInflater.from(context).inflate(R.layout.view_circle_select, this)
         setOnTouchListener(object : OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 if (event != null) {
                     updateCurrentAngle(event.x, event.y)
+                    listener?.onArcChanged(arc)
                     invalidate()
                 }
                 return true;
             }
 
         })
-       // bitmapPaint.alpha = 70
         mapBitmap = BitmapFactory.decodeResource(resources, R.drawable.map)?.getCircularBitmap()
     }
+
 
     private fun updateCurrentAngle(x: Float, y: Float) {
         val pointX: Float = x - measuredWidth / 2f
@@ -53,7 +56,7 @@ class CircleSelectorView : View {
         var tan_y: Float
         var atan: Double
 
-        //01: First quadrant - upper right corner area
+        // upper right
         if (pointX >= 0 && pointY <= 0) {
             tan_x = pointX * -1
             tan_y = pointY * -1
@@ -61,7 +64,7 @@ class CircleSelectorView : View {
             arc = Math.toDegrees(atan).toInt() + 90.0
         }
 
-        //02: Second quadrant - upper left corner area
+        //upper left
         if (pointX <= 0 && pointY <= 0) {
             tan_x = pointX
             tan_y = -pointY
@@ -69,7 +72,7 @@ class CircleSelectorView : View {
             arc = Math.toDegrees(atan).toInt() - 180.0
         }
 
-        //03: Third quadrant - lower left corner area
+        //lower left
         if (pointX <= 0 && pointY >= 0) {
             tan_x = pointX
             tan_y = pointY
@@ -81,7 +84,7 @@ class CircleSelectorView : View {
             }
         }
 
-        //04: Fourth quadrant - lower right corner area
+        //lower right
         if (pointX >= 0 && pointY >= 0) {
             tan_x = pointX
             tan_y = pointY
@@ -94,21 +97,33 @@ class CircleSelectorView : View {
         super.onDraw(canvas)
 
         val xDelta = (radius) * Math.cos(-Math.toRadians(arc)).toFloat()
-        val xDeltaA = (radius) * Math.cos(-Math.toRadians(arc+5)).toFloat()
-        val yDeltaA = (radius) * Math.sin(-Math.toRadians(arc+5)).toFloat()
-        val xDeltaB = (radius) * Math.cos(-Math.toRadians(arc-5)).toFloat()
-        val yDeltaB = (radius) * Math.sin(-Math.toRadians(arc-5)).toFloat()
+        val xDeltaA = (radius) * Math.cos(-Math.toRadians(arc + 5)).toFloat()
+        val yDeltaA = (radius) * Math.sin(-Math.toRadians(arc + 5)).toFloat()
+        val xDeltaB = (radius) * Math.cos(-Math.toRadians(arc - 5)).toFloat()
+        val yDeltaB = (radius) * Math.sin(-Math.toRadians(arc - 5)).toFloat()
         val yDelta = radius * Math.sin(-Math.toRadians(arc)).toFloat()
         val xCenter = measuredWidth / 2f
         val yCenter = measuredHeight / 2f
         if (mapBitmap != null) {
-            canvas?.drawBitmap(mapBitmap!!, xCenter-radius, yCenter-radius, bitmapPaint)
+            canvas?.drawBitmap(mapBitmap!!, xCenter - radius, yCenter - radius, bitmapPaint)
         }
         canvas?.drawCircle(measuredWidth / 2f, measuredHeight / 2f, radius / 20f, paint);
         canvas?.drawCircle(measuredWidth / 2f, measuredHeight / 2f, radius, paintCircle);
-        canvas?.drawLine(xCenter, yCenter, xCenter + xDelta/2, yCenter + yDelta/2, paint);
-        canvas?.drawLine(xCenter + xDelta/2, yCenter + yDelta/2, xCenter + xDeltaA*0.45f, yCenter + yDeltaA*0.45f, paint);
-        canvas?.drawLine(xCenter + xDelta/2, yCenter + yDelta/2, xCenter + xDeltaB*0.45f, yCenter + yDeltaB*0.45f, paint);
+        canvas?.drawLine(xCenter, yCenter, xCenter + xDelta / 2, yCenter + yDelta / 2, paint);
+        canvas?.drawLine(
+            xCenter + xDelta / 2,
+            yCenter + yDelta / 2,
+            xCenter + xDeltaA * 0.45f,
+            yCenter + yDeltaA * 0.45f,
+            paint
+        );
+        canvas?.drawLine(
+            xCenter + xDelta / 2,
+            yCenter + yDelta / 2,
+            xCenter + xDeltaB * 0.45f,
+            yCenter + yDeltaB * 0.45f,
+            paint
+        );
         canvas?.drawCircle(xCenter + xDelta, yCenter + yDelta, 20f, paint)
     }
 

@@ -57,7 +57,7 @@ class GpsService : Service() {
             .setContentTitle("Mocking location....")
             .setAutoCancel(false)
             .setOngoing(true)
-            .addAction(R.drawable.btn_moreinfo, "Stop", snoozePendingIntent)
+            .addAction(R.drawable.ic_baseline_menu_24, "Stop", snoozePendingIntent)
             .setContentIntent(bringToForegroundIntent())
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         with(NotificationManagerCompat.from(this)) {

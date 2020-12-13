@@ -263,6 +263,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> router.goToMoveScreen()
             else->{}
         }
+        drawerLayout.close()
         return true;
     }
 

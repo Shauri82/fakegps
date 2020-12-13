@@ -49,19 +49,21 @@
     <TextView
         android:id="@+id/activityMove_tvRandom"
         style="@style/Text.Normal"
-        android:textColor="@color/selectable_color"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/background_selected"
+        android:gravity="center"
         android:padding="@dimen/padding_big"
         android:text="@string/activityMove_random"
-        tools:textColor="@color/colorBlack"
+        android:textColor="@color/selectable_color"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/activityMove_tvAdvanced"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintWidth_percent="0.4"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activityMove_switchMove" />
+        app:layout_constraintTop_toBottomOf="@+id/activityMove_switchMove"
+        app:layout_constraintWidth_percent="0.4"
+        tools:textColor="@color/colorBlack"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/activityMove_tvAdvanced"
@@ -69,16 +71,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/background_selected"
+        android:gravity="center"
         android:padding="@dimen/padding_big"
         android:text="@string/activityMove_advanced"
-        tools:textColor="@color/colorBlack"
         android:textColor="@color/selectable_color"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        android:gravity="center"
-        app:layout_constraintWidth_percent="0.4"
         app:layout_constraintStart_toEndOf="@+id/activityMove_tvRandom"
-        app:layout_constraintTop_toBottomOf="@+id/activityMove_switchMove" />
+        app:layout_constraintTop_toBottomOf="@+id/activityMove_switchMove"
+        app:layout_constraintWidth_percent="0.4"
+        tools:textColor="@color/colorBlack"
+        tools:visibility="visible" />
 
 
     <TextView
@@ -90,6 +94,7 @@
         android:paddingStart="@dimen/padding_large"
         android:paddingEnd="@dimen/padding_large"
         android:text="@string/activityMove_random_info"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activityMove_tvRandom"
@@ -100,21 +105,24 @@
         style="@style/Text.Big"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_large"
         android:paddingStart="@dimen/padding_large"
         android:paddingEnd="@dimen/padding_large"
-        android:layout_marginTop="@dimen/padding_large"
         android:text="@string/activityMove_direction"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/activityMove_tvRandom" />
+        app:layout_constraintTop_toBottomOf="@+id/activityMove_tvRandom"
+        tools:visibility="visible" />
 
-    <include
+    <com.shauri.fakegps.view.CircleSelectorView
         android:id="@+id/activityMove_circleDirection"
-        layout="@layout/view_circle_select"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activityMove_tvDirectionLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/activityMove_tvDirectionLabel"
+        tools:visibility="visible" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
