@@ -1,10 +1,13 @@
 package com.shauri.fakegps.ui.base
 
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import com.shauri.fakegps.R
 import com.shauri.fakegps.ui.router.Router
+import kotlinx.android.synthetic.main.activity_move.*
 
 abstract class BaseActivity<Presenter : BasePresenter<out BaseUi>>() : BaseUi,
     AppCompatActivity() {
@@ -44,4 +47,6 @@ abstract class BaseActivity<Presenter : BasePresenter<out BaseUi>>() : BaseUi,
         super.onDestroy()
         presenter.onDestroy()
     }
+
+
 }

@@ -109,9 +109,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             );
             play_button.setText(R.string.stop)
             play_button.setBackgroundResource(R.color.colorRed)
+            pin.visibility = View.GONE
             startSevice()
             Log.d("CCC", "mocking stared")
         } else {
+            pin.visibility = View.VISIBLE
             stopService(
                 Intent(this, GpsService::class.java)
             )
@@ -245,11 +247,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     emmiter.onComplete()
                 }
 
-                huaweiMap.setOnCameraIdleListener {
-                    if (mocking) {
-                        startSevice()
-                    }
-                }
+//                huaweiMap.setOnCameraIdleListener {
+//                    if (mocking) {
+//                        startSevice()
+//                    }
+//                }
             }
         }
 

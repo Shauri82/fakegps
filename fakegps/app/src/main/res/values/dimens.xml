@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="padding_default">8dp</dimen>
+    <dimen name="padding_big">20dp</dimen>
     <dimen name="padding_large">32dp</dimen>
     <dimen name="margin_default">8dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
@@ -8,4 +9,10 @@
     <dimen name="pin_margin">52dp</dimen>
     <dimen name="footer_height">80dp</dimen>
     <dimen name="round">12dp</dimen>
+    <dimen name="font_big">18sp</dimen>
+    <dimen name="font_medium">16sp</dimen>
+    <dimen name="font_normal">14sp</dimen>
+    <dimen name="font_small">12sp</dimen>
+    <dimen name="font_tinny">10sp</dimen>
+    <dimen name="radius">120dp</dimen>
 </resources>

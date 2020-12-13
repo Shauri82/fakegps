@@ -21,5 +21,89 @@ class MoveActivity : BaseActivity<MovePresenter>(), MoveUi {
         }
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
+
+        activityMove_tvAdvanced.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                presenter.onAdvancedClicked()
+            }
+        })
+        activityMove_tvRandom.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                presenter.onRandomClicked()
+            }
+        })
+
+        activityMove_switchMove.setOnCheckedChangeListener { buttonView, isChecked ->
+            presenter.onCheckChanged(
+                isChecked
+            )
+        }
+    }
+
+
+    override fun setRandomEnabled() {
+        activityMove_tvRandom.isEnabled = true
+    }
+
+    override fun setRandomDisabled() {
+        activityMove_tvRandom.isEnabled = false
+    }
+
+    override fun setAdvancedEnabled() {
+        activityMove_tvAdvanced.isEnabled = true
+    }
+
+    override fun setAdvancedDisabled() {
+        activityMove_tvAdvanced.isEnabled = false
+    }
+
+    override fun setAdnavcedSelected() {
+        activityMove_tvAdvanced.isSelected = true
+    }
+
+    override fun setAdvancedUnselected() {
+        activityMove_tvAdvanced.isSelected = false
+    }
+
+    override fun setRandomSelected() {
+        activityMove_tvRandom.isSelected = true
+    }
+
+    override fun setRandomUnselected() {
+        activityMove_tvRandom.isSelected = false
+    }
+
+    override fun showAdvancedOptions() {
+        activityMove_circleDirection.visibility = View.VISIBLE
+        activityMove_tvDirectionLabel.visibility = View.VISIBLE
+    }
+
+    override fun hideAdvancedOptions() {
+        activityMove_circleDirection.visibility = View.GONE
+        activityMove_tvDirectionLabel.visibility = View.GONE
+    }
+
+    override fun showRandomOptions() {
+        activityMove_tvRandomInfo.visibility = View.VISIBLE
+    }
+
+    override fun hideRandomOptions() {
+        activityMove_tvRandomInfo.visibility = View.GONE
+    }
+
+    override fun hideRandomSelect() {
+        activityMove_tvRandom.visibility = View.GONE
+    }
+
+    override fun hideAdvancedSelect() {
+        activityMove_tvAdvanced.visibility = View.GONE
+    }
+
+    override fun showRandomSelect() {
+        activityMove_tvRandom.visibility = View.VISIBLE
+    }
+
+    override fun showAdvancedSelect() {
+        activityMove_tvAdvanced.visibility = View.VISIBLE
     }
 }
