@@ -42,7 +42,7 @@ class MoveActivity : BaseActivity<MovePresenter>(), MoveUi {
             )
         }
 
-        activityMove_circleDirection.listener = object: OnArcChangedListener{
+        activityMove_circleDirection.listener = object : OnArcChangedListener {
             override fun onArcChanged(arc: Double) {
                 presenter.onArcChanged(arc)
             }

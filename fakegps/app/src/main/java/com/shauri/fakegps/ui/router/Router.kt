@@ -2,7 +2,12 @@ package com.shauri.fakegps.ui.router
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import com.shauri.fakegps.GpsService
+import com.shauri.fakegps.data.ServiceData
 import com.shauri.fakegps.ui.move.MoveActivity
+
+val SERVICE_DATA="service_data"
+
 
 class Router(val activity: AppCompatActivity) {
     fun goToMoveScreen() {
@@ -10,5 +15,16 @@ class Router(val activity: AppCompatActivity) {
         activity.startActivity(i)
     }
 
+    fun startService(data:ServiceData){
+        var intent = Intent(activity, GpsService::class.java)
+        intent.putExtra(SERVICE_DATA, data)
+        activity.startService(intent)
+    }
+
+    fun stopService(){
+        activity.stopService(
+            Intent(activity, GpsService::class.java)
+        )
+    }
 
 }

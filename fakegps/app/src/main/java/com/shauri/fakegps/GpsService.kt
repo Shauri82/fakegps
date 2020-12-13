@@ -14,6 +14,9 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.huawei.hms.location.FusedLocationProviderClient
+import com.shauri.fakegps.data.ServiceData
+import com.shauri.fakegps.ui.main.MainActivity
+import com.shauri.fakegps.ui.router.SERVICE_DATA
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 import java.util.concurrent.TimeUnit
@@ -29,14 +32,16 @@ class GpsService : Service() {
 
     var lat: Double? = null
     var lon: Double? = null
+    lateinit var data: ServiceData
 
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("CCC", "on start command")
-        lat = intent?.getDoubleExtra("lat", 0.0)
-        lon = intent?.getDoubleExtra("lon", 0.0)
+        data = intent?.getParcelableExtra(SERVICE_DATA) as ServiceData
+        lat = data.point?.latitude ?: 0.0
+        lon = data.point?.longitude ?: 0.0
         return START_STICKY
     }
 
@@ -123,8 +128,8 @@ class GpsService : Service() {
         Log.d("CCC", "mocking ...");
         disposable = interval.subscribe {
 
-            lat = lat?.plus(getDelta())
-            lon = lon?.plus(getDelta())
+            lat = lat?.plus(getDeltaLat())
+            lon = lon?.plus(getDeltaLon())
             Log.d("CCC", "mocking ..." + lat + " " + lon);
             mockLocation.latitude = lat ?: 0.0
             mockLocation.longitude = lon ?: 0.0
@@ -137,7 +142,30 @@ class GpsService : Service() {
     }
 
 
-    private fun getDelta() = Random.nextInt(-10, 10) / 10000.0
+    private fun getDeltaLat(): Double {
+        if (data.mockMove) {
+            if (data.randomMove) {
+                return Random.nextInt(-10, 10) / 10000.0;
+            }
+            if (data.direction != null) {
+                val delta = -0.0005 * Math.sin(-Math.toRadians(data.direction!!))
+                return delta
+            }
+        }
+        return 0.0
+    }
 
+    private fun getDeltaLon(): Double {
+        if (data.mockMove) {
+            if (data.randomMove) {
+                return Random.nextInt(-10, 10) / 10000.0;
+            }
+            if (data.direction != null) {
+                val delta = 0.0005 * Math.cos(-Math.toRadians(data.direction!!))
+                return delta;
+            }
+        }
+        return 0.0
+    }
 
 }

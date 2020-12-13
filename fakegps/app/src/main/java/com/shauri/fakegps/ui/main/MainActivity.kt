@@ -1,4 +1,4 @@
-package com.shauri.fakegps
+package com.shauri.fakegps.ui.main
 
 import android.Manifest
 import android.content.Context
@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -27,15 +26,21 @@ import com.huawei.hms.maps.HuaweiMap
 import com.huawei.hms.maps.MapFragment
 import com.huawei.hms.maps.model.CameraUpdateParam
 import com.huawei.hms.maps.model.LatLng
+import com.shauri.fakegps.*
+import com.shauri.fakegps.dependency.AppComponent
+import com.shauri.fakegps.ui.base.BaseActivity
 import com.shauri.fakegps.ui.router.Router
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_footer_main.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : BaseActivity<MainPresenter>(), MainUi,
+    NavigationView.OnNavigationItemSelectedListener {
+    override fun provideLayoutRes() = R.layout.activity_main
 
-    private val router = Router(this)
+    override fun providePresenter(router: Router, component: AppComponent?) =
+        MainPresenter(this, router, component)
 
     private val testProvider = "gpstest"
     private val RECORD_REQUEST_CODE = 101
@@ -52,7 +57,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         val filter = IntentFilter()
         filter.addAction(STOP_MOCKING_ACTION)
         this.registerReceiver(receiver, filter)
@@ -91,11 +95,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     private fun startSevice() {
-        var intent = Intent(this, GpsService::class.java)
-        val point = huaweiMap.cameraPosition.target
-        intent.putExtra("lat", point.latitude)
-        intent.putExtra("lon", point.longitude)
-        startService(intent)
+
     }
 
     private fun handleMocking() {
@@ -110,13 +110,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             play_button.setText(R.string.stop)
             play_button.setBackgroundResource(R.color.colorRed)
             pin.visibility = View.GONE
-            startSevice()
+            presenter.startMocking(huaweiMap.cameraPosition.target)
             Log.d("CCC", "mocking stared")
         } else {
             pin.visibility = View.VISIBLE
-            stopService(
-                Intent(this, GpsService::class.java)
-            )
+            presenter.stopService()
             Log.d("CCC", "mocking stoped")
             play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 ResourcesCompat.getDrawable(
@@ -190,7 +188,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .setPositiveButton(
                         R.string.system_setting_ok
                     ) { dialog, which ->
-                        startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                        startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
                     }
                     .setNegativeButton(R.string.system_setting_cancel, { d, w -> })
                     .show()
@@ -246,12 +244,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 map.setOnMapLoadedCallback {
                     emmiter.onComplete()
                 }
-
-//                huaweiMap.setOnCameraIdleListener {
-//                    if (mocking) {
-//                        startSevice()
-//                    }
-//                }
             }
         }
 
@@ -259,20 +251,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.nav_home -> router.goToMoveScreen()
-            else->{}
-        }
-        drawerLayout.close()
+
+        presenter.onItemSelected(item.itemId)
+
         return true;
     }
 
+    override fun closeMenu() {
+        drawerLayout.close()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(receiver)
         compositeDisposable.dispose()
     }
-
-
 }
