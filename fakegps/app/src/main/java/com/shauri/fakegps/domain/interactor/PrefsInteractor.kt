@@ -21,4 +21,28 @@ class PrefsInteractor @Inject constructor(val storage: PrefsStorage) {
     }
 
     fun getArc() = storage.arc
+
+    fun setAccuracy(accuracy: Int) {
+        storage.accuracy = accuracy
+    }
+
+    fun getAccuracy() = storage.accuracy
+
+    fun setInterval(interval: Int) {
+        storage.interval = interval
+    }
+
+    fun getInterval() = storage.interval
+
+    fun isHms() = storage.hms
+
+    fun setHms(mock: Boolean) {
+        storage.hms = mock
+    }
+
+    fun isGms() = storage.gms
+
+    fun setGms(mock: Boolean) {
+        storage.gms = mock
+    }
 }

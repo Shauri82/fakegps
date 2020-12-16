@@ -14,6 +14,10 @@
 
     <style name="Text" />
 
+    <style name="Text.Error" >
+        <item name="android:textColor">@color/colorRed</item>
+    </style>
+
     <style name="Text.Small">
         <item name="android:textSize">@dimen/font_small</item>
     </style>

@@ -1,16 +1,21 @@
 package com.shauri.fakegps
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
+import androidx.annotation.RequiresPermission
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.huawei.hms.location.FusedLocationProviderClient
@@ -28,7 +33,8 @@ class GpsService : Service() {
     private val NOTIFICATION_ID = 766234
     private var disposable: Disposable? = null;
     val interval: Observable<Long> = Observable.interval(1, TimeUnit.SECONDS)
-    var locationProvider: FusedLocationProviderClient? = null;
+    var locationProviderHms: FusedLocationProviderClient? = null
+    var locationProviderGms: com.google.android.gms.location.FusedLocationProviderClient? = null
 
     var lat: Double? = null
     var lon: Double? = null
@@ -37,19 +43,26 @@ class GpsService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    @SuppressLint("MissingPermission")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("CCC", "on start command")
         data = intent?.getParcelableExtra(SERVICE_DATA) as ServiceData
         lat = data.point?.latitude ?: 0.0
         lon = data.point?.longitude ?: 0.0
+        if (canMock()) {
+            startMocking()
+        }
         return START_STICKY
     }
 
     override fun onCreate() {
         super.onCreate()
-        locationProvider = FusedLocationProviderClient(applicationContext)
+        locationProviderHms = FusedLocationProviderClient(applicationContext)
+        locationProviderGms = com.google.android.gms.location.FusedLocationProviderClient(
+            applicationContext
+        )
         startNotification()
-        startMocking()
+
     }
 
     fun startNotification() {
@@ -75,8 +88,33 @@ class GpsService : Service() {
             this.cancelAll()
         }
         disposable?.dispose()
-        locationProvider?.setMockMode(false)
+        stopMocking()
         super.onDestroy()
+    }
+
+    @SuppressLint("MissingPermission")
+    fun stopMocking() {
+        if (data.hms) {
+            locationProviderHms?.setMockMode(false)
+        }
+        if (data.gms) {
+            if (canMock()) {
+                locationProviderGms?.setMockMode(false)
+            }
+
+        }
+    }
+
+    fun canMock(): Boolean {
+        return (data.gms || data.hms) && (
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED)
+
     }
 
     private fun createChannel() {
@@ -106,10 +144,17 @@ class GpsService : Service() {
 
     }
 
+    @RequiresPermission(anyOf = ["android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"])
     private fun startMocking() {
 
 
-        locationProvider?.setMockMode(true)
+        if (data.hms) {
+            locationProviderHms?.setMockMode(true)
+        }
+
+        if (data.gms) {
+            locationProviderGms?.setMockMode(true)
+        }
         val providerName = "shauriFakeGps"
         val loc = Location(providerName)
         val mockLocation = Location(providerName) // a string
@@ -135,7 +180,12 @@ class GpsService : Service() {
             mockLocation.longitude = lon ?: 0.0
             mockLocation.time = System.currentTimeMillis()
             mockLocation.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
-            locationProvider?.setMockLocation(mockLocation)
+            if (data.hms) {
+                locationProviderHms?.setMockLocation(mockLocation)
+            }
+            if (data.gms) {
+                locationProviderGms?.setMockLocation(mockLocation)
+            }
         }
 
 

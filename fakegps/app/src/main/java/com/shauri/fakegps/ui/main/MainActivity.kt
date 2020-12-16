@@ -59,7 +59,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
         super.onCreate(savedInstanceState)
         val filter = IntentFilter()
         filter.addAction(STOP_MOCKING_ACTION)
-        this.registerReceiver(receiver, filter)
+        //this.registerReceiver(receiver, filter)
         checkVersion()
         play_button.setOnClickListener {
             mocking = !mocking

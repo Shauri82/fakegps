@@ -13,6 +13,7 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
     fun onItemSelected(id: Int) {
         when (id) {
             R.id.nav_home -> router.goToMoveScreen()
+            R.id.nav_settings -> router.goToSettingsScreen()
             else -> {
             }
         }
@@ -24,7 +25,9 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
             point = point,
             mockMove = prefsInteractor?.isMockMovement() ?: false,
             randomMove = prefsInteractor?.isRandomMovement() ?: false,
-            direction = prefsInteractor?.getArc()
+            direction = prefsInteractor?.getArc(),
+            gms = prefsInteractor?.isGms() ?: false,
+            hms = prefsInteractor?.isHms() ?: false
         )
         router.startService(data)
     }

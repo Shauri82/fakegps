@@ -30,6 +30,7 @@
         <activity
             android:name=".ui.move.MoveActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".ui.settings.SettingsActivity" />
 
         <service android:name=".GpsService" />
     </application>
