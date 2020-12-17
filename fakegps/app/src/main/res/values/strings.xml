@@ -36,4 +36,7 @@
     <string name="activitySettings_mgs_error">No Google Mobile Services detected</string>
     <string name="activitySettings_hms_error">No Huawei Mobile Services detected</string>
     <string name="activitySettings_hms">Mock Huawei Location</string>
+
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_ok">Save</string>
 </resources>

@@ -9,8 +9,10 @@ import com.huawei.hms.api.HuaweiApiAvailability
 import com.shauri.fakegps.R
 import com.shauri.fakegps.dependency.AppComponent
 import com.shauri.fakegps.ui.base.BaseActivity
+import com.shauri.fakegps.ui.dialog.InputDialog
 import com.shauri.fakegps.ui.router.Router
 import kotlinx.android.synthetic.main.activity_settings.*
+
 
 class SettingsActivity : BaseActivity<SettingsPresenter>(), SettingsUi {
     override fun provideLayoutRes(): Int = R.layout.activity_settings
@@ -40,6 +42,12 @@ class SettingsActivity : BaseActivity<SettingsPresenter>(), SettingsUi {
                 isChecked
             )
         }
+
+        activitySettings_etAccuracy.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                presenter.onAccuractyClicked()
+            }
+        })
     }
 
     override fun setInterval(interval: Int) {
@@ -76,6 +84,10 @@ class SettingsActivity : BaseActivity<SettingsPresenter>(), SettingsUi {
 
     override fun setHmsChecked(checked: Boolean) {
         activitySettings_sHms.isChecked = checked
+    }
+
+    override fun openDialog(label: Int) {
+        InputDialog(this, label).show()
     }
 
     fun Context.isGooglePlayServicesAvailable(): Boolean =

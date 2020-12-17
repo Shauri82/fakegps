@@ -37,6 +37,18 @@
         <item name="android:textColor">@color/colorWhite</item>
     </style>
 
+
+    <style name="ButtonPositive">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+
+    <style name="ButtonNegative">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@color/colorGray</item>
+    </style>
+
     <style name="ButtonUnSelected">
         <item name="android:textColor">@color/colorBlack</item>
     </style>

@@ -1,5 +1,6 @@
 package com.shauri.fakegps.ui.settings
 
+import com.shauri.fakegps.R
 import com.shauri.fakegps.dependency.AppComponent
 import com.shauri.fakegps.ui.base.BasePresenter
 import com.shauri.fakegps.ui.router.Router
@@ -38,5 +39,9 @@ class SettingsPresenter(uiRef: SettingsUi, router: Router, appComponent: AppComp
 
     fun onGmsCheckChanged(check:Boolean){
         prefsInteractor?.setGms(check)
+    }
+
+    fun onAccuractyClicked(){
+        ui()?.openDialog(R.string.activitySettings_interval)
     }
 }
