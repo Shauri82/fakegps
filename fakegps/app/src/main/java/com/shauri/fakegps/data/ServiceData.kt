@@ -9,6 +9,8 @@ data class ServiceData(
     val mockMove: Boolean = false,
     val randomMove: Boolean = false,
     val direction: Double? = null,
+    val accuracy: Int = 1,
+    val interval: Int = 1,
     val hms: Boolean = false,
     val gms: Boolean = false
 ) : Parcelable {
@@ -17,6 +19,8 @@ data class ServiceData(
         parcel.readByte() != 0.toByte(),
         parcel.readByte() != 0.toByte(),
         parcel.readValue(Double::class.java.classLoader) as? Double,
+        parcel.readInt(),
+        parcel.readInt(),
         parcel.readByte() != 0.toByte(),
         parcel.readByte() != 0.toByte()
     ) {
@@ -27,6 +31,8 @@ data class ServiceData(
         parcel.writeByte(if (mockMove) 1 else 0)
         parcel.writeByte(if (randomMove) 1 else 0)
         parcel.writeValue(direction)
+        parcel.writeInt(accuracy)
+        parcel.writeInt(interval)
         parcel.writeByte(if (hms) 1 else 0)
         parcel.writeByte(if (gms) 1 else 0)
     }
@@ -44,4 +50,5 @@ data class ServiceData(
             return arrayOfNulls(size)
         }
     }
+
 }

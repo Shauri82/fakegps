@@ -1,8 +1,11 @@
 package com.shauri.fakegps.ui.settings
 
+import android.text.TextUtils
+import androidx.annotation.NonNull
 import com.shauri.fakegps.R
 import com.shauri.fakegps.dependency.AppComponent
 import com.shauri.fakegps.ui.base.BasePresenter
+import com.shauri.fakegps.ui.dialog.InputDialog
 import com.shauri.fakegps.ui.router.Router
 
 class SettingsPresenter(uiRef: SettingsUi, router: Router, appComponent: AppComponent?) :
@@ -42,6 +45,26 @@ class SettingsPresenter(uiRef: SettingsUi, router: Router, appComponent: AppComp
     }
 
     fun onAccuractyClicked(){
-        ui()?.openDialog(R.string.activitySettings_interval)
+        ui()?.openDialog(R.string.activitySettings_accuracy,prefsInteractor?.getAccuracy().toString(),100 ,object:InputDialog.OnSaveClickedListener{
+            override fun onSaveClicked(value: String) {
+                if(TextUtils.isDigitsOnly(value)){
+                    prefsInteractor?.setAccuracy(value.toInt())
+                    ui()?.setAccuracy(value.toInt())
+                }
+            }
+        })
     }
+
+    fun onIntervalClicked(){
+        ui()?.openDialog(R.string.activitySettings_interval,prefsInteractor?.getInterval().toString(),1000, object:InputDialog.OnSaveClickedListener{
+            override fun onSaveClicked(value: String) {
+                if(TextUtils.isDigitsOnly(value)){
+                    prefsInteractor?.setInterval(value.toInt())
+                    ui()?.setInterval(value.toInt())
+                }
+            }
+        })
+    }
+
+
 }

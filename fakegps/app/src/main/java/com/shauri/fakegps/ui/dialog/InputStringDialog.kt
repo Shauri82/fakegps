@@ -9,14 +9,10 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.annotation.NonNull
 import com.shauri.fakegps.R
-import kotlinx.android.synthetic.main.dialog_int_input.*
+import kotlinx.android.synthetic.main.dialog_string_input.*
 
-
-class InputDialog(
+class InputStringDialog(
     context: Context,
-    val label: Int,
-    val value: String,
-    val maxInt: Int,
     val listener: OnSaveClickedListener
 ) :
     Dialog(context, R.style.Theme_AppCompat_Light_Dialog_Alert) {
@@ -25,37 +21,19 @@ class InputDialog(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        setContentView(R.layout.dialog_int_input)
+        setContentView(R.layout.dialog_string_input)
         dialog_input_btnCancel.setOnClickListener { dismiss() }
 
         dialog_input_btnSave.setOnClickListener {
             if (TextUtils.isEmpty(dialog_input_etValue.text)) {
-                val info = String.format(
-                    context.getString(R.string.dialog_error),
-                    maxInt.toString()
-                )
-                dialog_input_tvError.setText(info)
+                dialog_input_tvError.setText(context.getString(R.string.dialog_error3))
                 dialog_input_tvError.visibility = View.VISIBLE
-            } else if (TextUtils.isDigitsOnly(dialog_input_etValue.text)) {
-                val valueI = dialog_input_etValue.text.toString().toInt()
-                if (valueI < 1 || valueI > maxInt) {
-                    val info = String.format(
-                        context.getString(R.string.dialog_error2),
-                        maxInt.toString()
-                    )
-                    dialog_input_tvError.setText(info)
-                    dialog_input_tvError.visibility = View.VISIBLE
-                } else {
-                    dialog_input_tvError.visibility = View.GONE
-                    listener.onSaveClicked(dialog_input_etValue.text.toString())
-                    dismiss()
-                }
             } else {
+                dialog_input_tvError.visibility = View.GONE
+                listener.onSaveClicked(dialog_input_etValue.text.toString())
                 dismiss()
             }
         }
-        dialog_input_tvLabel.setText(label)
-        dialog_input_etValue.setText(value)
         dialog_input_etValue.requestFocus()
     }
 

@@ -3,6 +3,7 @@ package com.shauri.fakegps.ui.settings
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.NonNull
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.huawei.hms.api.HuaweiApiAvailability
@@ -43,9 +44,15 @@ class SettingsActivity : BaseActivity<SettingsPresenter>(), SettingsUi {
             )
         }
 
-        activitySettings_etAccuracy.setOnClickListener(object : View.OnClickListener {
+        activitySettings_ivAccuracyEdit.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 presenter.onAccuractyClicked()
+            }
+        })
+
+        activitySettings_ivIntervalEdit.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                presenter.onIntervalClicked()
             }
         })
     }
@@ -86,8 +93,8 @@ class SettingsActivity : BaseActivity<SettingsPresenter>(), SettingsUi {
         activitySettings_sHms.isChecked = checked
     }
 
-    override fun openDialog(label: Int) {
-        InputDialog(this, label).show()
+    override fun openDialog(label: Int,@NonNull value:String, maxValue:Int, listener:InputDialog.OnSaveClickedListener) {
+        InputDialog(this, label,value,maxValue, listener).show()
     }
 
     fun Context.isGooglePlayServicesAvailable(): Boolean =

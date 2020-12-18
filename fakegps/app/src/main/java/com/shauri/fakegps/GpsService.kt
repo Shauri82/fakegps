@@ -32,7 +32,7 @@ class GpsService : Service() {
     private val NOTIFICATION_CHANNEL_ID = "main_gps_service"
     private val NOTIFICATION_ID = 766234
     private var disposable: Disposable? = null;
-    val interval: Observable<Long> = Observable.interval(1, TimeUnit.SECONDS)
+
     var locationProviderHms: FusedLocationProviderClient? = null
     var locationProviderGms: com.google.android.gms.location.FusedLocationProviderClient? = null
 
@@ -157,11 +157,10 @@ class GpsService : Service() {
         }
         val providerName = "shauriFakeGps"
         val loc = Location(providerName)
-        val mockLocation = Location(providerName) // a string
-
+        val mockLocation = Location(providerName)
 
         mockLocation.altitude = loc.altitude
-        mockLocation.accuracy = 1f
+        mockLocation.accuracy = data.accuracy.toFloat()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mockLocation.bearingAccuracyDegrees = 0.1f
@@ -171,7 +170,7 @@ class GpsService : Service() {
 
 
         Log.d("CCC", "mocking ...");
-        disposable = interval.subscribe {
+        disposable = Observable.interval(data.interval.toLong(), TimeUnit.SECONDS).subscribe {
 
             lat = lat?.plus(getDeltaLat())
             lon = lon?.plus(getDeltaLon())

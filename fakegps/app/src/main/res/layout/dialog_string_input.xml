@@ -25,21 +25,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dialog_input_topLine"
-        tools:text="Update location interval (sec)" />
+        android:text="@string/dialog_location" />
 
     <EditText
         android:id="@+id/dialog_input_etValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:maxLength="5"
+        android:maxLength="25"
         android:focusedByDefault="true"
         android:gravity="center_horizontal"
-        android:inputType="number"
+        android:inputType="text"
+        android:text="@string/dialog_location"
+        android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dialog_input_tvLabel"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintWidth_percent="0.6" />
 
 
     <TextView
@@ -53,7 +54,7 @@
         tools:visibility="visible"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/dialog_input_etValue"
-        tools:text="Value must be between 0 and 100" />
+        android:text="@string/dialog_error3" />
 
     <View
         android:id="@+id/dialog_input_vHelper"

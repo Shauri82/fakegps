@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.shauri.fakegps.GpsService
 import com.shauri.fakegps.data.ServiceData
+import com.shauri.fakegps.ui.locations.LocationsActivity
 import com.shauri.fakegps.ui.move.MoveActivity
 import com.shauri.fakegps.ui.settings.SettingsActivity
 
@@ -18,6 +19,11 @@ class Router(val activity: AppCompatActivity) {
 
     fun goToSettingsScreen() {
         val i = Intent(activity, SettingsActivity::class.java)
+        activity.startActivity(i)
+    }
+
+    fun goToLocationsScreen() {
+        val i = Intent(activity, LocationsActivity::class.java)
         activity.startActivity(i)
     }
 

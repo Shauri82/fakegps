@@ -29,6 +29,8 @@ import com.huawei.hms.maps.model.LatLng
 import com.shauri.fakegps.*
 import com.shauri.fakegps.dependency.AppComponent
 import com.shauri.fakegps.ui.base.BaseActivity
+import com.shauri.fakegps.ui.dialog.InputDialog
+import com.shauri.fakegps.ui.dialog.InputStringDialog
 import com.shauri.fakegps.ui.router.Router
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -47,7 +49,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
     private var mocking = false
     private val firebase = FirebaseConfig()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var huaweiMap: HuaweiMap
+    private var huaweiMap: HuaweiMap? = null
     private val compositeDisposable = CompositeDisposable()
 
     val receiver = FakeGpsBroadcastReceiver(Runnable {
@@ -75,6 +77,11 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
         val v = getString(R.string.version_name)
         tvVersion.setText(String.format(v, BuildConfig.VERSION_NAME))
         nav_view.setNavigationItemSelectedListener(this)
+        activityMain_btnSaveLocation.setOnClickListener(object: View.OnClickListener{
+            override fun onClick(v: View?) {
+                presenter.onSaveLocationClicked(huaweiMap?.cameraPosition?.target)
+            }
+        })
     }
 
 
@@ -94,9 +101,6 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
     }
 
 
-    private fun startSevice() {
-
-    }
 
     private fun handleMocking() {
         if (mocking) {
@@ -110,7 +114,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
             play_button.setText(R.string.stop)
             play_button.setBackgroundResource(R.color.colorRed)
             pin.visibility = View.GONE
-            presenter.startMocking(huaweiMap.cameraPosition.target)
+            presenter.startMocking(huaweiMap?.cameraPosition?.target)
             Log.d("CCC", "mocking stared")
         } else {
             pin.visibility = View.VISIBLE
@@ -159,7 +163,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
                             ), 12.0f
                         )
 
-                        huaweiMap.animateCamera(CameraUpdate(params))
+                        huaweiMap?.animateCamera(CameraUpdate(params))
                     }
                 }
         }, { }))
@@ -265,5 +269,9 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
         super.onDestroy()
         unregisterReceiver(receiver)
         compositeDisposable.dispose()
+    }
+
+    override fun showDialog(listener: InputStringDialog.OnSaveClickedListener) {
+        InputStringDialog(this,  listener).show()
     }
 }
