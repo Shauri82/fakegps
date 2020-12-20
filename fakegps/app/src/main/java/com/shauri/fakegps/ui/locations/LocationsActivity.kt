@@ -1,6 +1,7 @@
 package com.shauri.fakegps.ui.locations
 
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.shauri.fakegps.R
@@ -61,5 +62,11 @@ class LocationsActivity : BaseActivity<LocationsPresenter>(), LocationsUi {
         AlertDialog(this, String.format(label, locationName), listener).show()
     }
 
+    override fun showProgress() {
+        activityLocations_pbProgress.visibility = View.VISIBLE
+    }
 
+    override fun hideProgress() {
+        activityLocations_pbProgress.visibility = View.GONE
+    }
 }

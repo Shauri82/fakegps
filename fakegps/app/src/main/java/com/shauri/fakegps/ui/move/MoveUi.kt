@@ -22,7 +22,6 @@ interface MoveUi : BaseUi {
     fun hideAdvancedSelect()
     fun showRandomSelect()
     fun showAdvancedSelect()
-    fun setChecked(checked:Boolean)
     fun setArc(arc:Double)
 
 }

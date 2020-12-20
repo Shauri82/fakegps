@@ -36,12 +36,6 @@ class MoveActivity : BaseActivity<MovePresenter>(), MoveUi {
             }
         })
 
-        activityMove_switchMove.setOnCheckedChangeListener { buttonView, isChecked ->
-            presenter.onCheckChanged(
-                isChecked
-            )
-        }
-
         activityMove_circleDirection.listener = object : OnArcChangedListener {
             override fun onArcChanged(arc: Double) {
                 presenter.onArcChanged(arc)
@@ -117,9 +111,6 @@ class MoveActivity : BaseActivity<MovePresenter>(), MoveUi {
         activityMove_tvAdvanced.visibility = View.VISIBLE
     }
 
-    override fun setChecked(checked: Boolean) {
-        activityMove_switchMove.isChecked = checked
-    }
 
     override fun setArc(arc: Double) {
         activityMove_circleDirection.arc = arc

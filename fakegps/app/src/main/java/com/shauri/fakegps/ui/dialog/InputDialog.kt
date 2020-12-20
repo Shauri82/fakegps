@@ -19,7 +19,7 @@ class InputDialog(
     val maxInt: Int,
     val listener: OnSaveClickedListener
 ) :
-    Dialog(context, R.style.Theme_AppCompat_Light_Dialog_Alert) {
+    Dialog(context) {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

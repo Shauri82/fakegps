@@ -10,15 +10,16 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.huawei.hms.location.FusedLocationProviderClient
 import com.huawei.hms.location.LocationServices
 import com.huawei.hms.maps.CameraUpdate
@@ -26,16 +27,18 @@ import com.huawei.hms.maps.HuaweiMap
 import com.huawei.hms.maps.MapFragment
 import com.huawei.hms.maps.model.CameraUpdateParam
 import com.huawei.hms.maps.model.LatLng
-import com.shauri.fakegps.*
+import com.shauri.fakegps.FakeGpsBroadcastReceiver
+import com.shauri.fakegps.R
+import com.shauri.fakegps.STOP_MOCKING_ACTION
 import com.shauri.fakegps.dependency.AppComponent
 import com.shauri.fakegps.ui.base.BaseActivity
-import com.shauri.fakegps.ui.dialog.InputDialog
 import com.shauri.fakegps.ui.dialog.InputStringDialog
+import com.shauri.fakegps.ui.router.KEY_LOCATION
+import com.shauri.fakegps.ui.router.REQUEST_LOCATION
 import com.shauri.fakegps.ui.router.Router
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.nav_footer_main.*
 
 class MainActivity : BaseActivity<MainPresenter>(), MainUi,
     NavigationView.OnNavigationItemSelectedListener {
@@ -46,26 +49,24 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
 
     private val testProvider = "gpstest"
     private val RECORD_REQUEST_CODE = 101
-    private var mocking = false
-    private val firebase = FirebaseConfig()
+
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var huaweiMap: HuaweiMap? = null
     private val compositeDisposable = CompositeDisposable()
 
-    val receiver = FakeGpsBroadcastReceiver(Runnable {
-        mocking = false
-        handleMocking()
-    })
+    private val receiver = FakeGpsBroadcastReceiver {
+        presenter.setMockingStoped()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val filter = IntentFilter()
         filter.addAction(STOP_MOCKING_ACTION)
-        //this.registerReceiver(receiver, filter)
-        checkVersion()
+        this.registerReceiver(receiver, filter)
+        presenter.checkVersion()
         play_button.setOnClickListener {
-            mocking = !mocking
-            handleMocking()
+            presenter.onButtonClicked(huaweiMap?.cameraPosition?.target)
         }
 
         setSupportActionBar(toolbar)
@@ -74,65 +75,57 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
         toolbar.setNavigationOnClickListener { v: View? ->
             drawerLayout.openDrawer(GravityCompat.START)
         }
-        val v = getString(R.string.version_name)
-        tvVersion.setText(String.format(v, BuildConfig.VERSION_NAME))
+
         nav_view.setNavigationItemSelectedListener(this)
-        activityMain_btnSaveLocation.setOnClickListener(object: View.OnClickListener{
-            override fun onClick(v: View?) {
-                presenter.onSaveLocationClicked(huaweiMap?.cameraPosition?.target)
+        activityMain_btnSaveLocation.setOnClickListener { presenter.onSaveLocationClicked(huaweiMap?.cameraPosition?.target) }
+    }
+
+
+    override fun showUpgradeDialog() {
+        AlertDialog.Builder(this)
+            .setMessage(R.string.version)
+            .setPositiveButton(
+                R.string.close
+            ) { _, _ ->
+                finish()
             }
-        })
+            .show()
     }
 
 
-    private fun checkVersion() {
-        if (needUpgrade(BuildConfig.VERSION_NAME, firebase.getMinVer())) {
-            AlertDialog.Builder(this)
-                .setMessage(R.string.version)
-                .setPositiveButton(
-                    R.string.close
-                ) { _, _ ->
-                    finish()
-                }
-                .show()
-        } else {
-            setupPermissions()
-        }
+    override fun setPinVisibility(visibility: Int) {
+        pin.visibility = visibility
     }
 
-
-
-    private fun handleMocking() {
-        if (mocking) {
-            play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                ResourcesCompat.getDrawable(
-                    getResources(),
-                    R.drawable.ic_baseline_pause_24,
-                    null
-                ), null, null, null
-            );
-            play_button.setText(R.string.stop)
-            play_button.setBackgroundResource(R.color.colorRed)
-            pin.visibility = View.GONE
-            presenter.startMocking(huaweiMap?.cameraPosition?.target)
-            Log.d("CCC", "mocking stared")
-        } else {
-            pin.visibility = View.VISIBLE
-            presenter.stopService()
-            Log.d("CCC", "mocking stoped")
-            play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                ResourcesCompat.getDrawable(
-                    getResources(),
-                    R.drawable.ic_baseline_play_arrow_24,
-                    null
-                ), null, null, null
-            );
-            play_button.setText(R.string.start)
-            play_button.setBackgroundResource(R.color.colorGreen)
-        }
+    override fun setButtonText(label: Int) {
+        play_button.setText(label)
     }
 
-    private fun setupPermissions() {
+    override fun setButtonBackground(background: Int) {
+        play_button.setBackgroundResource(background)
+    }
+
+    override fun setPauseButton() {
+        play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            ResourcesCompat.getDrawable(
+                getResources(),
+                R.drawable.ic_baseline_pause_24,
+                null
+            ), null, null, null
+        );
+    }
+
+    override fun setPlayButton() {
+        play_button.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            ResourcesCompat.getDrawable(
+                getResources(),
+                R.drawable.ic_baseline_play_arrow_24,
+                null
+            ), null, null, null
+        );
+    }
+
+    override fun setupPermissions() {
         val permission = ContextCompat.checkSelfPermission(
             this,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -154,23 +147,26 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
         compositeDisposable.add(Completable.mergeArray(initMap(), initFusedLocation()).subscribe({
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
-                    if (location != null) {
-                        val params = CameraUpdateParam()
-                        params.newLatLngZoom = CameraUpdateParam.NewLatLngZoom(
-                            LatLng(
-                                location.latitude,
-                                location.longitude
-                            ), 12.0f
-                        )
-
-                        huaweiMap?.animateCamera(CameraUpdate(params))
-                    }
+                    goToLocation(location?.latitude, location?.longitude)
                 }
         }, { }))
 
     }
 
-    fun initFusedLocation(): Completable {
+    override fun goToLocation(lat: Double?, lon: Double?) {
+        if (lat != null && lon != null) {
+            val params = CameraUpdateParam()
+            params.newLatLngZoom = CameraUpdateParam.NewLatLngZoom(
+                LatLng(
+                    lat,
+                    lon
+                ), 12.0f
+            )
+            huaweiMap?.animateCamera(CameraUpdate(params))
+        }
+    }
+
+    private fun initFusedLocation(): Completable {
         return Completable.create { emmiter ->
             val lm: LocationManager = getSystemService(
                 Context.LOCATION_SERVICE
@@ -185,7 +181,6 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
                 emmiter.onComplete()
 
             } catch (e: SecurityException) {
-                emmiter.onError(Exception())
                 AlertDialog.Builder(this)
                     .setTitle(R.string.system_settings_title)
                     .setMessage(R.string.system_settings_message)
@@ -194,8 +189,9 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
                     ) { dialog, which ->
                         startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
                     }
-                    .setNegativeButton(R.string.system_setting_cancel, { d, w -> })
+                    .setNegativeButton(R.string.system_setting_cancel) { _, _ -> }
                     .show()
+                emmiter.onError(Exception())
             }
         }
     }
@@ -209,7 +205,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     AlertDialog.Builder(this)
                         .setMessage(R.string.permission_setting_message)
-                        .setPositiveButton(R.string.permission_setting_ok) { a, b ->
+                        .setPositiveButton(R.string.permission_setting_ok) { _, _ ->
                             val intent =
                                 Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -217,7 +213,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
                             intent.data = uri
                             startActivity(intent)
                         }
-                        .setNegativeButton(R.string.permission_setting_cancel, { a, b -> })
+                        .setNegativeButton(R.string.permission_setting_cancel) { _, _ -> }
                         .show()
 
                 } else {
@@ -254,10 +250,21 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_LOCATION -> {
+                val position = data?.getParcelableExtra<LatLng>(KEY_LOCATION)
+                if (position != null) {
+                    presenter.setMockingStoped()
+                    goToLocation(position.latitude, position.longitude)
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
         presenter.onItemSelected(item.itemId)
-
         return true;
     }
 
@@ -272,6 +279,13 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
     }
 
     override fun showDialog(listener: InputStringDialog.OnSaveClickedListener) {
-        InputStringDialog(this,  listener).show()
+        InputStringDialog(this, listener).show()
+    }
+
+    override fun showSaveError(@StringRes error: Int) {
+        val snackbar: Snackbar =
+            Snackbar.make(findViewById(android.R.id.content), error, Snackbar.LENGTH_LONG)
+        snackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorRed))
+        snackbar.show()
     }
 }

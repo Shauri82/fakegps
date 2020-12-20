@@ -1,6 +1,7 @@
 package com.shauri.fakegps.ui.locations
 
 import android.util.Log
+import com.huawei.hms.maps.model.LatLng
 import com.shauri.fakegps.R
 import com.shauri.fakegps.database.entity.Location
 import com.shauri.fakegps.dependency.AppComponent
@@ -27,18 +28,20 @@ class LocationsPresenter(uiRef: LocationsUi, router: Router, appComponent: AppCo
                 onDeleteLocationClicked(location)
             }
 
-            override fun onLocationClicked() {
-
+            override fun onLocationClicked(location: Location) {
+                router()?.closeWithLocation(LatLng(location.lat, location.lon))
             }
         })
         loadLocations()
     }
 
     fun loadLocations() {
+        ui()?.showProgress()
         compositeDisposable.add(dataInteractor?.getLocations()?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Consumer<List<Location>> {
                 override fun accept(t: List<Location>?) {
+                    ui()?.hideProgress()
                     if (t != null) {
                         ui()?.setLocations(t)
                     }
@@ -47,6 +50,7 @@ class LocationsPresenter(uiRef: LocationsUi, router: Router, appComponent: AppCo
             }, object : Consumer<Throwable> {
                 override fun accept(t: Throwable?) {
                     Log.e("CCC", "exc", t)
+                    ui()?.hideProgress()
 
                 }
             }
@@ -66,7 +70,7 @@ class LocationsPresenter(uiRef: LocationsUi, router: Router, appComponent: AppCo
     }
 
     fun deleteLocation(location: Location) {
-
+        ui()?.showProgress()
         compositeDisposable.add(
             dataInteractor?.deleteLocation(location)
 
@@ -79,6 +83,7 @@ class LocationsPresenter(uiRef: LocationsUi, router: Router, appComponent: AppCo
                 }, object : Consumer<Throwable> {
                     override fun accept(t: Throwable?) {
                         Log.e("CCC", "exc", t)
+                        ui()?.hideProgress()
                     }
                 })
         )

@@ -5,8 +5,9 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorGreen</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/design_default_color_secondary_variant</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="Theme.MyApplication.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MyApplication.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -14,7 +15,7 @@
 
     <style name="Text" />
 
-    <style name="Text.Error" >
+    <style name="Text.Error">
         <item name="android:textColor">@color/colorRed</item>
     </style>
 
@@ -33,6 +34,7 @@
     <style name="Text.Big">
         <item name="android:textSize">@dimen/font_big</item>
     </style>
+
     <style name="ButtonSelected">
         <item name="android:textColor">@color/colorWhite</item>
     </style>
@@ -40,7 +42,7 @@
 
     <style name="ButtonPositive">
         <item name="android:textColor">@color/colorWhite</item>
-        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:background">?attr/colorPrimary</item>
     </style>
 
 
@@ -51,5 +53,17 @@
 
     <style name="ButtonUnSelected">
         <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="Theme1" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary_dark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Theme2" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary2</item>
+        <item name="colorPrimary_dark">@color/colorPrimaryDark2</item>
+        <item name="colorAccent">@color/colorAccent2</item>
     </style>
 </resources>

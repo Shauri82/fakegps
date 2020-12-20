@@ -4,16 +4,15 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.Window
-import androidx.annotation.StringRes
 import com.shauri.fakegps.R
 import kotlinx.android.synthetic.main.dialog_alert.*
 
 class AlertDialog(
     context: Context,
-    val value:String,
+    val value: String,
     val listener: OnSaveClickedListener
 ) :
-    Dialog(context, R.style.Theme_AppCompat_Light_Dialog_Alert) {
+    Dialog(context) {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

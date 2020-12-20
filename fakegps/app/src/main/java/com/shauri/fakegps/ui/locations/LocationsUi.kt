@@ -13,4 +13,8 @@ interface LocationsUi : BaseUi {
     fun prepareList(listener: LocationAdapter.OnLocationClickedListener)
 
     fun showConfirmDialog(@StringRes title:Int,locationName: String, listener: AlertDialog.OnSaveClickedListener)
+
+    fun showProgress()
+
+    fun hideProgress()
 }

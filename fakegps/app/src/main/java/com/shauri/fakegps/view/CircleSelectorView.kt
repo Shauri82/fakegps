@@ -6,7 +6,10 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
+import com.google.android.material.color.MaterialColors
 import com.shauri.fakegps.R
+import com.shauri.fakegps.ui.getColorByAttributeId
 
 
 class CircleSelectorView : View {
@@ -31,7 +34,7 @@ class CircleSelectorView : View {
         paint.setColor(Color.BLACK)
         paint.setStrokeWidth(5f);
         paintCircle.isAntiAlias = true
-        paintCircle.color = ContextCompat.getColor(context, R.color.colorPrimary)
+        paintCircle.color = context.getColorByAttributeId(R.attr.colorPrimary)
         paintCircle.style = Paint.Style.STROKE
         paintCircle.strokeWidth = 3f
         setOnTouchListener(object : OnTouchListener {
@@ -45,7 +48,7 @@ class CircleSelectorView : View {
             }
 
         })
-        mapBitmap = BitmapFactory.decodeResource(resources, R.drawable.map)?.getCircularBitmap()
+
     }
 
 
@@ -95,7 +98,7 @@ class CircleSelectorView : View {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-
+        initBitmapIfNeeded()
         val xDelta = (radius) * Math.cos(-Math.toRadians(arc)).toFloat()
         val xDeltaA = (radius) * Math.cos(-Math.toRadians(arc + 5)).toFloat()
         val yDeltaA = (radius) * Math.sin(-Math.toRadians(arc + 5)).toFloat()
@@ -127,6 +130,12 @@ class CircleSelectorView : View {
         canvas?.drawCircle(xCenter + xDelta, yCenter + yDelta, 20f, paint)
     }
 
+    fun initBitmapIfNeeded(){
+        if(mapBitmap==null){
+            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.map)
+            mapBitmap = Bitmap.createScaledBitmap(bitmap,measuredWidth,measuredHeight,false)?.getCircularBitmap()
+        }
+    }
 
     fun Bitmap.getCircularBitmap(config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
         // circle configuration

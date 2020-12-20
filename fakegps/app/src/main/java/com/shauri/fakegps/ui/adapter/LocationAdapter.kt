@@ -41,6 +41,6 @@ class LocationAdapter(val listener: OnLocationClickedListener) :
 
     interface OnLocationClickedListener {
         fun onLocationDeleteClicked(location: Location)
-        fun onLocationClicked()
+        fun onLocationClicked(location:Location)
     }
 }

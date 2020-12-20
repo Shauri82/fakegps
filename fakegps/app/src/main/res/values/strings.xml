@@ -11,6 +11,7 @@
     <string name="permission_setting_cancel">Cancel</string>
 
     <string name="activityMain_save_location">Save location</string>
+    <string name="activityMain_save_location_error">An error occurred while saving location</string>
     <string name="start">Start mocking</string>
     <string name="stop">Stop mocking</string>
 
@@ -27,7 +28,7 @@
     <string name="activityMove_mock">Mock movement</string>
     <string name="activityMove_direction">Select move direction</string>
     <string name="activityMove_random">Random move</string>
-    <string name="activityMove_advanced">Advanced</string>
+    <string name="activityMove_advanced">Advanced move</string>
     <string name="activityMove_random_info">Location will change in random direction every 1 sec</string>
 
     <string name="activitySettings_title">Settings</string>
@@ -51,4 +52,6 @@
 
     <string name="dialog_delete_location">Are you sure you want to delete location \'%s\'?</string>
     <string name="activityLocations_title">Saved locations</string>
+
+    <string name="activityAbout_title">About</string>
 </resources>

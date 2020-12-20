@@ -1,10 +1,13 @@
 package com.shauri.fakegps.ui.main
 
-import android.util.Log
+import android.view.View
 import com.huawei.hms.maps.model.LatLng
+import com.shauri.fakegps.BuildConfig
+import com.shauri.fakegps.FirebaseConfig
 import com.shauri.fakegps.R
 import com.shauri.fakegps.data.ServiceData
 import com.shauri.fakegps.dependency.AppComponent
+import com.shauri.fakegps.needUpgrade
 import com.shauri.fakegps.ui.base.BasePresenter
 import com.shauri.fakegps.ui.dialog.InputStringDialog
 import com.shauri.fakegps.ui.router.Router
@@ -19,17 +22,26 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
     val prefsInteractor = appComponent?.prefsInteractor()
     val dataInteractor = appComponent?.dataInteractor()
     val compositeDisposable = CompositeDisposable()
-
+    private val firebase = FirebaseConfig()
+    private var mocking = false
 
     fun onItemSelected(id: Int) {
         when (id) {
-            R.id.nav_home -> router.goToMoveScreen()
+            R.id.nav_about -> router.goToAboutScreen()
             R.id.nav_settings -> router.goToSettingsScreen()
             R.id.nav_locations -> router.goToLocationsScreen()
             else -> {
             }
         }
         ui()?.closeMenu()
+    }
+
+    fun checkVersion() {
+        if (needUpgrade(BuildConfig.VERSION_NAME, firebase.getMinVer())) {
+            ui()?.showUpgradeDialog()
+        } else {
+            ui()?.setupPermissions()
+        }
     }
 
     fun startMocking(point: LatLng?) {
@@ -46,6 +58,12 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
         router.startService(data)
     }
 
+    fun setMockingStoped(){
+        mocking = false
+        onMockingChanged(null)
+    }
+
+
     fun stopService() {
         router.stopService()
     }
@@ -60,11 +78,11 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
                             ?.observeOn(AndroidSchedulers.mainThread())
                             ?.subscribe(object : Action {
                                 override fun run() {
-                                    Log.d("CCC", "saved")
+                                    ui()?.showSaveError(R.string.activityMain_save_location_error)
                                 }
                             }, object : Consumer<Throwable> {
                                 override fun accept(t: Throwable?) {
-                                    Log.e("CCC", "exc", t)
+                                    ui()?.showSaveError(R.string.activityMain_save_location_error)
                                 }
                             })
                     )
@@ -72,6 +90,28 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
             })
         }
     }
+
+    fun onButtonClicked(position: LatLng?){
+        mocking = !mocking
+        onMockingChanged(position)
+    }
+
+    fun onMockingChanged(position: LatLng?) {
+        if (mocking) {
+            ui()?.setPauseButton()
+            ui()?.setButtonText(R.string.stop)
+            ui()?.setButtonBackground(R.color.colorRed)
+            ui()?.setPinVisibility(View.GONE)
+            startMocking(position)
+        } else {
+            ui()?.setPinVisibility(View.VISIBLE)
+            stopService()
+            ui()?.setPlayButton()
+            ui()?.setButtonText(R.string.start)
+            ui()?.setButtonBackground(R.color.colorGreen)
+        }
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

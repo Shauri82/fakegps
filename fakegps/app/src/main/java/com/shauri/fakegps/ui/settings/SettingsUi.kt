@@ -21,4 +21,8 @@ interface SettingsUi : BaseUi {
         @NonNull maxValue:Int,
         listener: InputDialog.OnSaveClickedListener
     )
+    fun enableMoveType()
+    fun disableMoveType();
+    fun setMoveChecked(checked: Boolean)
+    fun setMoveType(@StringRes label :Int)
 }

@@ -44,18 +44,18 @@ class SettingsActivity : BaseActivity<SettingsPresenter>(), SettingsUi {
             )
         }
 
-        activitySettings_ivAccuracyEdit.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                presenter.onAccuractyClicked()
-            }
-        })
+        activitySettings_ivAccuracyEdit.setOnClickListener { presenter.onAccuractyClicked() }
 
-        activitySettings_ivIntervalEdit.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                presenter.onIntervalClicked()
-            }
-        })
+        activitySettings_ivIntervalEdit.setOnClickListener { presenter.onIntervalClicked() }
+
+        activitySettings_sMove.setOnCheckedChangeListener { _, isChecked ->
+            presenter.onMoveCheckChanged(isChecked)
+        }
+
+        activitySettings_ivMoveSettings.setOnClickListener { presenter.onMoveSettingsCLicked() }
     }
+
+
 
     override fun setInterval(interval: Int) {
         activitySettings_etInterval.setText(interval.toString())
@@ -93,8 +93,33 @@ class SettingsActivity : BaseActivity<SettingsPresenter>(), SettingsUi {
         activitySettings_sHms.isChecked = checked
     }
 
-    override fun openDialog(label: Int,@NonNull value:String, maxValue:Int, listener:InputDialog.OnSaveClickedListener) {
-        InputDialog(this, label,value,maxValue, listener).show()
+    override fun openDialog(
+        label: Int,
+        @NonNull value: String,
+        maxValue: Int,
+        listener: InputDialog.OnSaveClickedListener
+    ) {
+        InputDialog(this, label, value, maxValue, listener).show()
+    }
+
+    override fun enableMoveType() {
+        activitySettings_vMoveTypeContainer.isEnabled = true
+        activitySettings_tvMoveTypeLabel.isEnabled = true
+        activitySettings_ivMoveSettings.isEnabled = true
+    }
+
+    override fun disableMoveType() {
+        activitySettings_vMoveTypeContainer.isEnabled = false
+        activitySettings_tvMoveTypeLabel.isEnabled = false
+        activitySettings_ivMoveSettings.isEnabled = false
+    }
+
+    override fun setMoveChecked(checked: Boolean) {
+        activitySettings_sMove.isChecked = checked
+    }
+
+    override fun setMoveType(label: Int) {
+        activitySettings_tvMoveTypeLabel.setText(label)
     }
 
     fun Context.isGooglePlayServicesAvailable(): Boolean =

@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:background="@color/colorGreen"
+            android:background="?attr/colorPrimary"
             android:drawableStart="@drawable/ic_baseline_play_arrow_24"
             android:padding="@dimen/padding_default"
             android:text="@string/start"
@@ -72,7 +72,7 @@
             android:id="@+id/activityMain_btnSaveLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorGreen"
+            android:background="?attr/colorPrimary"
             android:drawableStart="@drawable/ic_baseline_save_24"
             android:padding="@dimen/padding_default"
             android:drawablePadding="@dimen/padding_default"
@@ -90,10 +90,6 @@
         android:layout_gravity="start"
         android:background="@color/colorWhite"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/drawer_view">
+        app:menu="@menu/drawer_view"/>
 
-        <include layout="@layout/nav_footer_main" />
-
-
-    </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

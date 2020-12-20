@@ -15,8 +15,8 @@ class MovePresenter(uiRef: MoveUi, router: Router, appComponent: AppComponent?) 
 
 
     fun onInitialized() {
-        ui()?.setChecked(prefsInteractor?.isMockMovement() ?: false)
         ui()?.setArc(prefsInteractor?.getArc() ?: 0.0)
+        checkMoveSettings(prefsInteractor?.isMockMovement() ?: true)
     }
 
     fun onAdvancedClicked() {
@@ -45,7 +45,7 @@ class MovePresenter(uiRef: MoveUi, router: Router, appComponent: AppComponent?) 
         ui()?.hideRandomOptions()
     }
 
-    fun onCheckChanged(checked: Boolean) {
+    fun checkMoveSettings(checked: Boolean) {
         prefsInteractor?.setMockMovement(checked)
         if (checked) {
             ui()?.showRandomSelect()
@@ -63,7 +63,7 @@ class MovePresenter(uiRef: MoveUi, router: Router, appComponent: AppComponent?) 
         }
     }
 
-    fun onArcChanged(arc:Double){
+    fun onArcChanged(arc: Double) {
         prefsInteractor?.setArc(arc)
     }
 }

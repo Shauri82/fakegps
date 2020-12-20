@@ -14,6 +14,7 @@ class LocationViewHolder(override val containerView: View) : RecyclerView.ViewHo
             rowLocation_tvName.setText(location.name)
             rowLocation_tvLatLng.text = "${location.lat},${location.lon}"
             rowLocation_ivDelete.setOnClickListener { listener.onLocationDeleteClicked(location) }
+            rowLocation_container.setOnClickListener { listener.onLocationClicked(location) }
         }
     }
 }

@@ -46,7 +46,7 @@
         android:drawablePadding="@dimen/padding_default"
         android:padding="@dimen/padding_default"
         android:text="@string/activitySettings_section1"
-        android:textColor="@color/colorPrimary"
+        android:textColor="?attr/colorPrimary"
         app:layout_constraintTop_toBottomOf="@+id/toolbarContainer" />
 
     <TextView
@@ -92,6 +92,38 @@
         android:background="@drawable/line_underline_gray"
         app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvAccuracyLabel"
         app:layout_constraintTop_toBottomOf="@+id/activitySettings_vIntervalContainer" />
+
+    <View
+        android:id="@+id/activitySettings_vMoveContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/line_underline_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvMoveLabel"
+        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vAccuracyContainer" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/activitySettings_sMove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_medium"
+        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvMoveLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vAccuracyContainer" />
+
+    <TextView
+        android:id="@+id/activitySettings_tvMoveLabel"
+        style="@style/Text.Medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/padding_default"
+        android:paddingTop="@dimen/margin_medium"
+        android:paddingEnd="@dimen/padding_default"
+        android:paddingBottom="@dimen/margin_medium"
+        android:text="@string/activityMove_mock"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vAccuracyContainer" />
+
 
     <TextView
         android:id="@+id/activitySettings_tvAccuracyLabel"
@@ -139,6 +171,29 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.7" />
 
+    <View
+        android:id="@+id/activitySettings_vMoveTypeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/background_line_underline"
+        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvMoveTypeLabel"
+        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vMoveContainer" />
+
+    <TextView
+        android:id="@+id/activitySettings_tvMoveTypeLabel"
+        style="@style/Text.Medium"
+        android:textColor="@color/text_color"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/padding_large"
+        android:paddingTop="@dimen/margin_medium"
+        android:paddingEnd="@dimen/padding_default"
+        android:paddingBottom="@dimen/margin_medium"
+        tools:text="Random move"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vMoveContainer" />
+
 
     <TextView
         android:id="@+id/activitySettings_tvSection2"
@@ -147,12 +202,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_large"
         android:background="@drawable/line_underline_primary"
-        android:drawableStart="@drawable/ic_baseline_gps_fixed_24"
         android:drawablePadding="@dimen/padding_default"
         android:padding="@dimen/padding_default"
         android:text="@string/activitySettings_section2"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vAccuracyContainer" />
+        android:textColor="?attr/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vMoveTypeContainer"
+        app:drawableStartCompat="@drawable/ic_baseline_gps_fixed_24" />
 
     <View
         android:id="@+id/activitySettings_tvGmsContainer"
@@ -177,7 +232,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection2" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/activitySettings_sGms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -232,7 +287,7 @@
         app:layout_constraintStart_toStartOf="@+id/activitySettings_tvHmsLabel"
         app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvHmsLabel" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/activitySettings_sHms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -240,5 +295,15 @@
         android:padding="@dimen/margin_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvGmsError" />
+
+    <ImageView
+        android:id="@+id/activitySettings_ivMoveSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_vMoveTypeContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/padding_default"
+        app:layout_constraintTop_toBottomOf="@+id/activitySettings_sMove"
+        app:srcCompat="@drawable/ic_baseline_chevron_right_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

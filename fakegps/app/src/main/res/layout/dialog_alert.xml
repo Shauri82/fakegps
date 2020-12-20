@@ -10,7 +10,7 @@
         android:id="@+id/dialog_alert_topLine"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dialog_line"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
