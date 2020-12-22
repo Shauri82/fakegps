@@ -23,4 +23,10 @@ class AboutActivity : BaseActivity<AboutPresenter>(), AboutUi {
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
     }
+
+    override fun setVersion(ver: String) {
+        val value = getString(R.string.activityAbout_version)
+        activityAbout_tvVersion.setText(String.format(value,ver))
+
+    }
 }

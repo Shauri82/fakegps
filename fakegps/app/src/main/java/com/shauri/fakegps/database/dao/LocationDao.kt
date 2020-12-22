@@ -11,7 +11,7 @@ interface LocationDao {
     @Delete
     fun deleteLocation(location: Location)
 
-    @Query("SELECT * FROM locations")
+    @Query("SELECT * FROM locations ORDER BY id desc")
     fun getLocations(): List<Location>
 
     @Query("SELECT COUNT(id)  FROM locations")
