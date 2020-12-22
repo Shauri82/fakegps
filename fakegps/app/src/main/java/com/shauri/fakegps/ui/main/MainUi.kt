@@ -1,6 +1,7 @@
 package com.shauri.fakegps.ui.main
 
 import android.location.Location
+import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.huawei.hms.maps.model.LatLng
@@ -17,6 +18,7 @@ interface MainUi : BaseUi {
     fun setPauseButton()
     fun setPlayButton()
     fun setButtonText(@StringRes label:Int)
-    fun setButtonBackground(@DrawableRes background: Int)
+    fun setButtonBackground(@AttrRes background: Int)
     fun setPinVisibility(visibility: Int)
+    fun showTooMuchLocations(max:Int)
 }

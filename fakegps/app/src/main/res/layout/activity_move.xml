@@ -25,11 +25,11 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <TextView
+    <Button
         android:id="@+id/activityMove_tvRandom"
         style="@style/Text.Normal"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/button_height"
         android:background="@drawable/background_selected"
         android:gravity="center"
         android:padding="@dimen/padding_big"
@@ -43,11 +43,11 @@
         tools:textColor="@color/colorBlack"
         tools:visibility="visible" />
 
-    <TextView
+    <Button
         android:id="@+id/activityMove_tvAdvanced"
         style="@style/Text.Normal"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/button_height"
         android:background="@drawable/background_selected"
         android:gravity="center"
         android:padding="@dimen/padding_big"
@@ -59,7 +59,8 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbarContainer"
         app:layout_constraintWidth_percent="0.5"
         tools:textColor="@color/colorBlack"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        app:drawableStartCompat="@drawable/drawable_selected" />
 
 
     <TextView

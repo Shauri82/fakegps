@@ -2,8 +2,10 @@ package com.shauri.fakegps.ui.locations
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.shauri.fakegps.R
 import com.shauri.fakegps.database.entity.Location
 import com.shauri.fakegps.dependency.AppComponent
@@ -68,5 +70,33 @@ class LocationsActivity : BaseActivity<LocationsPresenter>(), LocationsUi {
 
     override fun hideProgress() {
         activityLocations_pbProgress.visibility = View.GONE
+    }
+
+    override fun showEmpty() {
+        activityLocations_tvEmpty.visibility = View.VISIBLE
+    }
+
+    override fun showError() {
+        val snackbar: Snackbar =
+            Snackbar.make(
+                findViewById(android.R.id.content),
+                R.string.activityLocations_error,
+                Snackbar.LENGTH_INDEFINITE
+            )
+        snackbar.setAction(R.string.activityLocations_try_again) { presenter.loadLocations() }
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+        snackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorRed))
+        snackbar.show()
+    }
+
+    override fun showDeleteError() {
+        val snackbar: Snackbar =
+            Snackbar.make(
+                findViewById(android.R.id.content),
+                R.string.activityLocations_error,
+                Snackbar.LENGTH_INDEFINITE
+            )
+        snackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorRed))
+        snackbar.show()
     }
 }

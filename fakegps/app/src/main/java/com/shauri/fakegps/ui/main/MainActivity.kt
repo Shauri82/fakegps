@@ -33,6 +33,7 @@ import com.shauri.fakegps.STOP_MOCKING_ACTION
 import com.shauri.fakegps.dependency.AppComponent
 import com.shauri.fakegps.ui.base.BaseActivity
 import com.shauri.fakegps.ui.dialog.InputStringDialog
+import com.shauri.fakegps.ui.getColorByAttributeId
 import com.shauri.fakegps.ui.router.KEY_LOCATION
 import com.shauri.fakegps.ui.router.REQUEST_LOCATION
 import com.shauri.fakegps.ui.router.Router
@@ -92,6 +93,16 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
             .show()
     }
 
+    override fun showTooMuchLocations(max:Int) {
+        val text = getString(R.string.activityMain_save_location_too_many)
+        AlertDialog.Builder(this)
+            .setMessage(String.format(text,max))
+            .setPositiveButton(
+                R.string.ok
+            ) { _, _ ->
+            }
+            .show()
+    }
 
     override fun setPinVisibility(visibility: Int) {
         pin.visibility = visibility
@@ -102,7 +113,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
     }
 
     override fun setButtonBackground(background: Int) {
-        play_button.setBackgroundResource(background)
+        play_button.setBackgroundColor(getColorByAttributeId(background))
     }
 
     override fun setPauseButton() {

@@ -19,4 +19,6 @@ class DataInteractor @Inject constructor(val locationDataSource: LocationDataSou
     fun getLocations() = locationDataSource.getLocations()
 
     fun deleteLocation(location:Location) = locationDataSource.deleteLocation(location)
+
+    fun countLocations() = locationDataSource.countLocations()
 }

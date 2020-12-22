@@ -68,21 +68,29 @@ class SettingsActivity : BaseActivity<SettingsPresenter>(), SettingsUi {
     override fun enableGooglePlayServices() {
         activitySettings_sGms.isEnabled = true
         activitySettings_tvGmsError.visibility = View.GONE
+        activitySettings_tvGmsLabel.isEnabled = true
+        activitySettings_tvGmsContainer.isEnabled = true
     }
 
     override fun enableHuaweiServices() {
         activitySettings_sHms.isEnabled = true
         activitySettings_tvHmsError.visibility = View.GONE
+        activitySettings_tvHmsLabel.isEnabled = true
+        activitySettings_vHmsContainer.isEnabled = true
     }
 
     override fun disableGooglePlayServices() {
         activitySettings_sGms.isEnabled = false
         activitySettings_tvGmsError.visibility = View.VISIBLE
+        activitySettings_tvGmsLabel.isEnabled =false;
+        activitySettings_tvGmsContainer.isEnabled = false
     }
 
     override fun disableHuaweiPlayServices() {
         activitySettings_sHms.isEnabled = false
         activitySettings_tvHmsError.visibility = View.VISIBLE
+        activitySettings_tvHmsLabel.isEnabled = false
+        activitySettings_vHmsContainer.isEnabled = false
     }
 
     override fun setGmsChecked(checked: Boolean) {

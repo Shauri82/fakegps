@@ -12,12 +12,14 @@
 
     <string name="activityMain_save_location">Save location</string>
     <string name="activityMain_save_location_error">An error occurred while saving location</string>
+    <string name="activityMain_save_location_too_many">You can save up to %d locations. Remove old locations to continue</string>
     <string name="start">Start mocking</string>
     <string name="stop">Stop mocking</string>
 
     <string name="version">New app version available!. Please upgrade your app to continue.</string>
     <string name="close">Go to AppGallery</string>
     <string name="version_name">v. %s</string>
+    <string name="ok">OK</string>
 
     <string name="menu_move">Mock movement</string>
     <string name="menu_settings">Settings</string>
@@ -29,7 +31,7 @@
     <string name="activityMove_direction">Select move direction</string>
     <string name="activityMove_random">Random move</string>
     <string name="activityMove_advanced">Advanced move</string>
-    <string name="activityMove_random_info">Location will change in random direction every 1 sec</string>
+    <string name="activityMove_random_info">Location will change in random direction every %d sec</string>
 
     <string name="activitySettings_title">Settings</string>
     <string name="activitySettings_section1">Location settings</string>
@@ -42,6 +44,8 @@
     <string name="activitySettings_hms_error">No Huawei Mobile Services detected</string>
     <string name="activitySettings_hms">Mock Huawei Location</string>
 
+
+
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_save">Save</string>
     <string name="dialog_ok">OK</string>
@@ -51,7 +55,12 @@
     <string name="dialog_error3">Name must not be empty</string>
 
     <string name="dialog_delete_location">Are you sure you want to delete location \'%s\'?</string>
+
     <string name="activityLocations_title">Saved locations</string>
+    <string name="activityLocations_empty">You have no saved locations</string>
+    <string name="activityLocations_error">An error occurred</string>
+    <string name="activityLocations_try_again">Try again</string>
+
 
     <string name="activityAbout_title">About</string>
 </resources>

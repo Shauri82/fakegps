@@ -13,4 +13,7 @@ interface LocationDao {
 
     @Query("SELECT * FROM locations")
     fun getLocations(): List<Location>
+
+    @Query("SELECT COUNT(id)  FROM locations")
+    fun getLocationsCount(): Int
 }

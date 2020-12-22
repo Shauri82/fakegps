@@ -17,4 +17,10 @@ interface LocationsUi : BaseUi {
     fun showProgress()
 
     fun hideProgress()
+
+    fun showEmpty();
+
+    fun showError()
+
+    fun showDeleteError()
 }

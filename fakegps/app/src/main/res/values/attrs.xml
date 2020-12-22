@@ -2,7 +2,8 @@
 <resources>
 
     <attr name="colorPrimary" format="reference|color" />
-    <attr name="colorPrimary_dark" format="reference|color" />
+    <attr name="colorPrimaryDark" format="reference|color" />
     <attr name="colorAccent" format="reference|color" />
+    <attr name="colorCancel" format="reference|color" />
 
 </resources>

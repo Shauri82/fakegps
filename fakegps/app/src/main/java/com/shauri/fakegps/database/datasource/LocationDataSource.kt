@@ -8,4 +8,5 @@ interface LocationDataSource {
     fun saveLocation(location:Location):Completable
     fun getLocations(): Single<List<Location>>
     fun deleteLocation(location:Location):Completable
+    fun countLocations() : Single<Int>
 }

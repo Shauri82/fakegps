@@ -33,6 +33,18 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbarContainer"
         tools:listitem="@layout/row_location" />
 
+    <TextView
+        android:id="@+id/activityLocations_tvEmpty"
+        style="@style/Text.Big"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/activityLocations_empty"
+        app:layout_constraintBottom_toBottomOf="@+id/activityLocations_rvLocations"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarContainer" />
+
     <ProgressBar
         android:id="@+id/activityLocations_pbProgress"
         android:layout_width="wrap_content"

@@ -20,4 +20,10 @@ class LocationDataSourceImpl @Inject constructor(val dao: LocationDao) : Locatio
     override fun deleteLocation(location:Location): Completable {
         return Completable.fromAction { dao.deleteLocation(location) }
     }
+
+    override fun countLocations(): Single<Int> {
+        return Single.fromCallable {
+            dao.getLocationsCount()
+        }
+    }
 }

@@ -63,18 +63,22 @@ class MoveActivity : BaseActivity<MovePresenter>(), MoveUi {
 
     override fun setAdnavcedSelected() {
         activityMove_tvAdvanced.isSelected = true
+        activityMove_tvAdvanced.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_check_24,0,0,0)
     }
 
     override fun setAdvancedUnselected() {
         activityMove_tvAdvanced.isSelected = false
+        activityMove_tvAdvanced.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
     }
 
     override fun setRandomSelected() {
         activityMove_tvRandom.isSelected = true
+        activityMove_tvRandom.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_check_24,0,0,0)
     }
 
     override fun setRandomUnselected() {
         activityMove_tvRandom.isSelected = false
+        activityMove_tvRandom.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
     }
 
     override fun showAdvancedOptions() {
@@ -115,5 +119,10 @@ class MoveActivity : BaseActivity<MovePresenter>(), MoveUi {
     override fun setArc(arc: Double) {
         activityMove_circleDirection.arc = arc
         activityMove_circleDirection.invalidate()
+    }
+
+    override fun setMoveInterval(sec: Int) {
+        val info = String.format(getString(R.string.activityMove_random_info),sec)
+        activityMove_tvRandomInfo.setText(info)
     }
 }

@@ -17,8 +17,12 @@ import io.reactivex.rxjava3.functions.Action
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers
 
+const val MAX_LOCATIONS = 50
+
 class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) :
     BasePresenter<MainUi>(uiRef, router, appComponent) {
+
+
     val prefsInteractor = appComponent?.prefsInteractor()
     val dataInteractor = appComponent?.dataInteractor()
     val compositeDisposable = CompositeDisposable()
@@ -58,7 +62,7 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
         router.startService(data)
     }
 
-    fun setMockingStoped(){
+    fun setMockingStoped() {
         mocking = false
         onMockingChanged(null)
     }
@@ -70,28 +74,48 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
 
     fun onSaveLocationClicked(point: LatLng?) {
         if (point != null) {
-            ui()?.showDialog(object : InputStringDialog.OnSaveClickedListener {
-                override fun onSaveClicked(value: String) {
-                    compositeDisposable.add(
-                        dataInteractor?.saveLocation(point, value)
-                            ?.subscribeOn(Schedulers.io())
-                            ?.observeOn(AndroidSchedulers.mainThread())
-                            ?.subscribe(object : Action {
-                                override fun run() {
-                                    ui()?.showSaveError(R.string.activityMain_save_location_error)
+
+            compositeDisposable.add(
+                dataInteractor?.countLocations()?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(
+                        { t ->
+                            if (t != null) {
+                                if (t <= MAX_LOCATIONS) {
+                                    save(point)
+                                } else {
+                                    ui()?.showTooMuchLocations(MAX_LOCATIONS)
                                 }
-                            }, object : Consumer<Throwable> {
-                                override fun accept(t: Throwable?) {
-                                    ui()?.showSaveError(R.string.activityMain_save_location_error)
-                                }
-                            })
-                    )
-                }
-            })
+                            }
+                        }
+                    ) { ui()?.showSaveError(R.string.activityMain_save_location_error) }
+            )
+
+
         }
     }
 
-    fun onButtonClicked(position: LatLng?){
+    private fun save(point: LatLng) {
+        ui()?.showDialog(object : InputStringDialog.OnSaveClickedListener {
+            override fun onSaveClicked(value: String) {
+                compositeDisposable.add(
+                    dataInteractor?.saveLocation(point, value)
+                        ?.subscribeOn(Schedulers.io())
+                        ?.observeOn(AndroidSchedulers.mainThread())
+                        ?.subscribe(object : Action {
+                            override fun run() {
+                            }
+                        }, object : Consumer<Throwable> {
+                            override fun accept(t: Throwable?) {
+                                ui()?.showSaveError(R.string.activityMain_save_location_error)
+                            }
+                        })
+                )
+            }
+        })
+    }
+
+    fun onButtonClicked(position: LatLng?) {
         mocking = !mocking
         onMockingChanged(position)
     }
@@ -100,7 +124,7 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
         if (mocking) {
             ui()?.setPauseButton()
             ui()?.setButtonText(R.string.stop)
-            ui()?.setButtonBackground(R.color.colorRed)
+            ui()?.setButtonBackground(R.attr.colorCancel)
             ui()?.setPinVisibility(View.GONE)
             startMocking(position)
         } else {
@@ -108,7 +132,7 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
             stopService()
             ui()?.setPlayButton()
             ui()?.setButtonText(R.string.start)
-            ui()?.setButtonBackground(R.color.colorGreen)
+            ui()?.setButtonBackground(R.attr.colorPrimary)
         }
     }
 

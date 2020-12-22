@@ -23,5 +23,6 @@ interface MoveUi : BaseUi {
     fun showRandomSelect()
     fun showAdvancedSelect()
     fun setArc(arc:Double)
+    fun setMoveInterval(sec:Int)
 
 }

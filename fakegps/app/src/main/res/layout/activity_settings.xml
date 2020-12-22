@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/toolbarContainer"
@@ -25,285 +26,303 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <View
-        android:id="@+id/activitySettings_vIntervalContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/line_underline_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvIntervalLabel"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection1"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="-24dp" />
-
-    <TextView
-        android:id="@+id/activitySettings_tvSection1"
-        style="@style/Text.Medium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:background="@drawable/line_underline_primary"
-        android:drawableStart="@drawable/ic_baseline_settings_24"
-        android:drawablePadding="@dimen/padding_default"
-        android:padding="@dimen/padding_default"
-        android:text="@string/activitySettings_section1"
-        android:textColor="?attr/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarContainer" />
-
-    <TextView
-        android:id="@+id/activitySettings_tvIntervalLabel"
-        style="@style/Text.Medium"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding_default"
-        android:paddingTop="@dimen/margin_medium"
-        android:paddingEnd="@dimen/padding_default"
-        android:paddingBottom="@dimen/margin_medium"
-        android:text="@string/activitySettings_interval"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection1" />
-
-    <TextView
-        android:id="@+id/activitySettings_etInterval"
-        style="@style/Text.Medium"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_medium"
-        android:focusable="false"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvIntervalLabel"
-        app:layout_constraintEnd_toStartOf="@+id/activitySettings_ivIntervalEdit"
-        app:layout_constraintTop_toTopOf="@+id/activitySettings_tvIntervalLabel"
-        tools:text="20" />
-
-    <ImageView
-        android:id="@+id/activitySettings_ivIntervalEdit"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/padding_default"
-        android:src="@drawable/ic_baseline_edit_24"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvIntervalLabel"
-        app:layout_constraintEnd_toEndOf="@+id/activitySettings_vIntervalContainer"
-        app:layout_constraintTop_toTopOf="@+id/activitySettings_vIntervalContainer" />
+        android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/activitySettings_vAccuracyContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/line_underline_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvAccuracyLabel"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vIntervalContainer" />
-
-    <View
-        android:id="@+id/activitySettings_vMoveContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/line_underline_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvMoveLabel"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vAccuracyContainer" />
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/activitySettings_sMove"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/margin_medium"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvMoveLabel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vAccuracyContainer" />
-
-    <TextView
-        android:id="@+id/activitySettings_tvMoveLabel"
-        style="@style/Text.Medium"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding_default"
-        android:paddingTop="@dimen/margin_medium"
-        android:paddingEnd="@dimen/padding_default"
-        android:paddingBottom="@dimen/margin_medium"
-        android:text="@string/activityMove_mock"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vAccuracyContainer" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
 
-    <TextView
-        android:id="@+id/activitySettings_tvAccuracyLabel"
-        style="@style/Text.Medium"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding_default"
-        android:paddingTop="@dimen/margin_medium"
-        android:paddingEnd="@dimen/padding_default"
-        android:paddingBottom="@dimen/margin_medium"
-        android:text="@string/activitySettings_accuracy"
-        app:layout_constraintEnd_toStartOf="@+id/activitySettings_etAccuracy"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vIntervalContainer" />
+            <View
+                android:id="@+id/activitySettings_vIntervalContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/line_underline_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvIntervalLabel"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection1"
+                app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/activitySettings_etAccuracy"
-        style="@style/Text.Medium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:layout_marginEnd="@dimen/margin_medium"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvAccuracyLabel"
-        app:layout_constraintEnd_toStartOf="@+id/activitySettings_ivIntervalEdit"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_etInterval"
-        tools:text="5" />
+            <TextView
+                android:id="@+id/activitySettings_tvSection1"
+                style="@style/Text.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_medium"
+                android:background="@drawable/line_underline_primary"
+                android:drawableStart="@drawable/ic_baseline_settings_24"
+                android:drawablePadding="@dimen/padding_default"
+                android:padding="@dimen/padding_default"
+                android:text="@string/activitySettings_section1"
+                android:textColor="?attr/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/activitySettings_ivAccuracyEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/padding_default"
-        android:src="@drawable/ic_baseline_edit_24"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvAccuracyLabel"
-        app:layout_constraintEnd_toEndOf="@+id/activitySettings_vAccuracyContainer"
-        app:layout_constraintTop_toTopOf="@+id/activitySettings_vAccuracyContainer" />
+            <TextView
+                android:id="@+id/activitySettings_tvIntervalLabel"
+                style="@style/Text.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_default"
+                android:paddingTop="@dimen/margin_medium"
+                android:paddingEnd="@dimen/padding_default"
+                android:paddingBottom="@dimen/margin_medium"
+                android:text="@string/activitySettings_interval"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection1" />
 
+            <TextView
+                android:id="@+id/activitySettings_etInterval"
+                style="@style/Text.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_medium"
+                android:focusable="false"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvIntervalLabel"
+                app:layout_constraintEnd_toStartOf="@+id/activitySettings_ivIntervalEdit"
+                app:layout_constraintTop_toTopOf="@+id/activitySettings_tvIntervalLabel"
+                tools:text="20" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.7" />
+            <ImageView
+                android:id="@+id/activitySettings_ivIntervalEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/padding_default"
+                android:src="@drawable/ic_baseline_edit_24"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvIntervalLabel"
+                app:layout_constraintEnd_toEndOf="@+id/activitySettings_vIntervalContainer"
+                app:layout_constraintTop_toTopOf="@+id/activitySettings_vIntervalContainer" />
 
-    <View
-        android:id="@+id/activitySettings_vMoveTypeContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/background_line_underline"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvMoveTypeLabel"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vMoveContainer" />
+            <View
+                android:id="@+id/activitySettings_vAccuracyContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/line_underline_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvAccuracyLabel"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_vIntervalContainer" />
 
-    <TextView
-        android:id="@+id/activitySettings_tvMoveTypeLabel"
-        style="@style/Text.Medium"
-        android:textColor="@color/text_color"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding_large"
-        android:paddingTop="@dimen/margin_medium"
-        android:paddingEnd="@dimen/padding_default"
-        android:paddingBottom="@dimen/margin_medium"
-        tools:text="Random move"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vMoveContainer" />
+            <View
+                android:id="@+id/activitySettings_vMoveContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/line_underline_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvMoveLabel"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_vAccuracyContainer" />
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/activitySettings_sMove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_medium"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvMoveLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_vAccuracyContainer" />
 
-    <TextView
-        android:id="@+id/activitySettings_tvSection2"
-        style="@style/Text.Medium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_large"
-        android:background="@drawable/line_underline_primary"
-        android:drawablePadding="@dimen/padding_default"
-        android:padding="@dimen/padding_default"
-        android:text="@string/activitySettings_section2"
-        android:textColor="?attr/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_vMoveTypeContainer"
-        app:drawableStartCompat="@drawable/ic_baseline_gps_fixed_24" />
-
-    <View
-        android:id="@+id/activitySettings_tvGmsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/line_underline_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvGmsError"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection2" />
-
-
-    <TextView
-        android:id="@+id/activitySettings_tvGmsLabel"
-        style="@style/Text.Medium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding_default"
-        android:paddingTop="@dimen/margin_medium"
-        android:paddingEnd="@dimen/padding_default"
-        android:paddingBottom="@dimen/margin_medium"
-        android:text="@string/activitySettings_gms"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_sGms"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection2" />
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/activitySettings_sGms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/margin_medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection2" />
+            <TextView
+                android:id="@+id/activitySettings_tvMoveLabel"
+                style="@style/Text.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_default"
+                android:paddingTop="@dimen/margin_medium"
+                android:paddingEnd="@dimen/padding_default"
+                android:paddingBottom="@dimen/margin_medium"
+                android:text="@string/activityMove_mock"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_vAccuracyContainer" />
 
 
-    <TextView
-        android:id="@+id/activitySettings_tvGmsError"
-        style="@style/Text.Error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding_default"
-        android:paddingEnd="@dimen/padding_default"
-        android:paddingBottom="@dimen/padding_default"
-        android:text="@string/activitySettings_mgs_error"
-        app:layout_constraintStart_toStartOf="@+id/activitySettings_tvGmsLabel"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvGmsLabel" />
+            <TextView
+                android:id="@+id/activitySettings_tvAccuracyLabel"
+                style="@style/Text.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_default"
+                android:paddingTop="@dimen/margin_medium"
+                android:paddingEnd="@dimen/padding_default"
+                android:paddingBottom="@dimen/margin_medium"
+                android:text="@string/activitySettings_accuracy"
+                app:layout_constraintEnd_toStartOf="@+id/activitySettings_etAccuracy"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_vIntervalContainer" />
 
-    <View
-        android:id="@+id/activitySettings_vHmsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/line_underline_gray"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvHmsError"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvGmsContainer" />
+            <TextView
+                android:id="@+id/activitySettings_etAccuracy"
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_medium"
+                android:layout_marginEnd="@dimen/margin_medium"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvAccuracyLabel"
+                app:layout_constraintEnd_toStartOf="@+id/activitySettings_ivIntervalEdit"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_etInterval"
+                tools:text="5" />
 
-    <TextView
-        android:id="@+id/activitySettings_tvHmsLabel"
-        style="@style/Text.Medium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding_default"
-        android:paddingTop="@dimen/margin_medium"
-        android:paddingEnd="@dimen/padding_default"
-        android:paddingBottom="@dimen/margin_medium"
-        android:text="@string/activitySettings_hms"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_sHms"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/activitySettings_sHms" />
+            <ImageView
+                android:id="@+id/activitySettings_ivAccuracyEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/padding_default"
+                android:src="@drawable/ic_baseline_edit_24"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvAccuracyLabel"
+                app:layout_constraintEnd_toEndOf="@+id/activitySettings_vAccuracyContainer"
+                app:layout_constraintTop_toTopOf="@+id/activitySettings_vAccuracyContainer" />
 
-    <TextView
-        android:id="@+id/activitySettings_tvHmsError"
-        style="@style/Text.Error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding_default"
-        android:paddingEnd="@dimen/padding_default"
-        android:paddingBottom="@dimen/padding_default"
-        android:text="@string/activitySettings_hms_error"
-        app:layout_constraintStart_toStartOf="@+id/activitySettings_tvHmsLabel"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvHmsLabel" />
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/activitySettings_sHms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:padding="@dimen/margin_medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvGmsError" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.7" />
 
-    <ImageView
-        android:id="@+id/activitySettings_ivMoveSettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/activitySettings_vMoveTypeContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="@dimen/padding_default"
-        app:layout_constraintTop_toBottomOf="@+id/activitySettings_sMove"
-        app:srcCompat="@drawable/ic_baseline_chevron_right_24" />
+            <View
+                android:id="@+id/activitySettings_vMoveTypeContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/background_line_underline"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvMoveTypeLabel"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_vMoveContainer" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/activitySettings_tvMoveTypeLabel"
+                style="@style/Text.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_large"
+                android:paddingTop="@dimen/margin_medium"
+                android:paddingEnd="@dimen/padding_default"
+                android:paddingBottom="@dimen/margin_medium"
+                android:textColor="@color/text_color"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_vMoveContainer"
+                tools:text="Random move" />
+
+
+            <TextView
+                android:id="@+id/activitySettings_tvSection2"
+                style="@style/Text.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_large"
+                android:background="@drawable/line_underline_primary"
+                android:drawablePadding="@dimen/padding_default"
+                android:padding="@dimen/padding_default"
+                android:text="@string/activitySettings_section2"
+                android:textColor="?attr/colorPrimary"
+                app:drawableStartCompat="@drawable/ic_baseline_gps_fixed_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_vMoveTypeContainer" />
+
+            <View
+                android:id="@+id/activitySettings_tvGmsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/background_line_underline"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvGmsError"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection2" />
+
+
+            <TextView
+                android:id="@+id/activitySettings_tvGmsLabel"
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_default"
+                android:paddingTop="@dimen/margin_medium"
+                android:paddingEnd="@dimen/padding_default"
+                android:paddingBottom="@dimen/margin_medium"
+                android:text="@string/activitySettings_gms"
+                android:textColor="@color/text_color"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_sGms"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection2" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/activitySettings_sGms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvSection2" />
+
+
+            <TextView
+                android:id="@+id/activitySettings_tvGmsError"
+                style="@style/Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_default"
+                android:paddingEnd="@dimen/padding_default"
+                android:paddingBottom="@dimen/padding_default"
+                android:text="@string/activitySettings_mgs_error"
+                android:textColor="@color/colorRedDisabled"
+                app:layout_constraintStart_toStartOf="@+id/activitySettings_tvGmsLabel"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvGmsLabel" />
+
+            <View
+                android:id="@+id/activitySettings_vHmsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/line_underline_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_tvHmsError"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvGmsContainer" />
+
+            <TextView
+                android:id="@+id/activitySettings_tvHmsLabel"
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_default"
+                android:paddingTop="@dimen/margin_medium"
+                android:paddingEnd="@dimen/padding_default"
+                android:paddingBottom="@dimen/margin_medium"
+                android:text="@string/activitySettings_hms"
+                android:textColor="@color/text_color"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_sHms"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/activitySettings_sHms" />
+
+            <TextView
+                android:id="@+id/activitySettings_tvHmsError"
+                style="@style/Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_default"
+                android:paddingEnd="@dimen/padding_default"
+                android:paddingBottom="@dimen/padding_default"
+                android:text="@string/activitySettings_hms_error"
+                android:textColor="@color/colorRedDisabled"
+                app:layout_constraintStart_toStartOf="@+id/activitySettings_tvHmsLabel"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvHmsLabel" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/activitySettings_sHms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:padding="@dimen/margin_medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_tvGmsError" />
+
+            <ImageView
+                android:id="@+id/activitySettings_ivMoveSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/padding_default"
+                app:layout_constraintBottom_toBottomOf="@+id/activitySettings_vMoveTypeContainer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activitySettings_sMove"
+                app:srcCompat="@drawable/ic_baseline_chevron_right_24" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

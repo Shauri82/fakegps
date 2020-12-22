@@ -78,9 +78,8 @@ class GpsService : Service() {
             .addAction(R.drawable.ic_baseline_menu_24, "Stop", snoozePendingIntent)
             .setContentIntent(bringToForegroundIntent())
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        with(NotificationManagerCompat.from(this)) {
-            notify(NOTIFICATION_ID, builder.build())
-        }
+        startForeground(NOTIFICATION_ID, builder.build())
+
     }
 
     override fun onDestroy() {

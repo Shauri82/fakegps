@@ -10,13 +10,13 @@ class MovePresenter(uiRef: MoveUi, router: Router, appComponent: AppComponent?) 
 
     val prefsInteractor = appComponent?.prefsInteractor()
 
-
     var randomSelected = prefsInteractor?.isRandomMovement() ?: true;
 
 
     fun onInitialized() {
         ui()?.setArc(prefsInteractor?.getArc() ?: 0.0)
         checkMoveSettings(prefsInteractor?.isMockMovement() ?: true)
+        ui()?.setMoveInterval(prefsInteractor?.getInterval() ?: 1)
     }
 
     fun onAdvancedClicked() {
