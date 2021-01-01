@@ -8,10 +8,12 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -40,6 +42,9 @@ import com.shauri.fakegps.ui.router.Router
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
+import java.util.*
+
 
 class MainActivity : BaseActivity<MainPresenter>(), MainUi,
     NavigationView.OnNavigationItemSelectedListener {
@@ -52,7 +57,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
     private val RECORD_REQUEST_CODE = 101
 
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var fusedLocationClient: FusedLocationProviderClient? = null
     private var huaweiMap: HuaweiMap? = null
     private val compositeDisposable = CompositeDisposable()
 
@@ -62,6 +67,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val filter = IntentFilter()
         filter.addAction(STOP_MOCKING_ACTION)
         this.registerReceiver(receiver, filter)
@@ -79,24 +85,26 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
 
         nav_view.setNavigationItemSelectedListener(this)
         activityMain_btnSaveLocation.setOnClickListener { presenter.onSaveLocationClicked(huaweiMap?.cameraPosition?.target) }
+
     }
 
 
     override fun showUpgradeDialog() {
         AlertDialog.Builder(this)
+            .setCancelable(false)
             .setMessage(R.string.version)
             .setPositiveButton(
                 R.string.close
             ) { _, _ ->
-                finish()
+                presenter.onGoToAppGalleryClicked()
             }
             .show()
     }
 
-    override fun showTooMuchLocations(max:Int) {
+    override fun showTooMuchLocations(max: Int) {
         val text = getString(R.string.activityMain_save_location_too_many)
         AlertDialog.Builder(this)
-            .setMessage(String.format(text,max))
+            .setMessage(String.format(text, max))
             .setPositiveButton(
                 R.string.ok
             ) { _, _ ->
@@ -137,17 +145,30 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
     }
 
     override fun setupPermissions() {
-        val permission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
 
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                RECORD_REQUEST_CODE
+            val permissions = arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             )
+            checkPermissions(permissions)
+
+        } else {
+            val permissions = arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                "android.permission.ACCESS_BACKGROUND_LOCATION"
+            )
+            checkPermissions(permissions)
+        }
+
+    }
+
+    private fun checkPermissions(permissions: Array<String>) {
+        if (Arrays.stream(permissions).anyMatch {
+                ActivityCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+            }) {
+            ActivityCompat.requestPermissions(this, permissions, RECORD_REQUEST_CODE)
         } else {
             initLocation()
         }
@@ -155,12 +176,20 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
 
 
     private fun initLocation() {
-        compositeDisposable.add(Completable.mergeArray(initMap(), initFusedLocation()).subscribe({
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    goToLocation(location?.latitude, location?.longitude)
-                }
-        }, { }))
+        compositeDisposable.add(
+            Completable.mergeArray(initMap(), initFusedLocation()).subscribe(
+                {
+                    fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+                    fusedLocationClient?.lastLocation
+                        ?.addOnSuccessListener { location: Location? ->
+                            goToLocation(location?.latitude, location?.longitude)
+                        }
+                        ?.addOnFailureListener { Timber.e(it) }
+                },
+                { t ->
+                    Timber.e(t)
+                })
+        )
 
     }
 
@@ -183,12 +212,13 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
                 Context.LOCATION_SERVICE
             ) as LocationManager
             try {
+
                 lm.addTestProvider(
                     testProvider, false, false, false, false, false,
                     true, true, 0, 5
                 )
                 lm.removeTestProvider(testProvider)
-                fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
                 emmiter.onComplete()
 
             } catch (e: SecurityException) {
@@ -202,7 +232,7 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
                     }
                     .setNegativeButton(R.string.system_setting_cancel) { _, _ -> }
                     .show()
-                emmiter.onError(Exception())
+                emmiter.onComplete()
             }
         }
     }
@@ -241,18 +271,18 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
             val mapFragment = fragmentManager.findFragmentById(R.id.mapView) as MapFragment
             mapFragment.getMapAsync { map ->
                 huaweiMap = map
-                map.isMyLocationEnabled = true
-                map.uiSettings.isMyLocationButtonEnabled = true
-                map.uiSettings.isScrollGesturesEnabled = true
-                map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
-                map.uiSettings.isTiltGesturesEnabled = true
-                map.uiSettings.isZoomControlsEnabled = true
-                map.uiSettings.isIndoorLevelPickerEnabled = true
-                map.uiSettings.isMapToolbarEnabled = true
-                map.uiSettings.isZoomGesturesEnabled = false
-                map.uiSettings.setAllGesturesEnabled(true)
 
                 map.setOnMapLoadedCallback {
+                    map.isMyLocationEnabled = true
+                    map.uiSettings.isMyLocationButtonEnabled = true
+                    map.uiSettings.isScrollGesturesEnabled = true
+                    map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
+                    map.uiSettings.isTiltGesturesEnabled = true
+                    map.uiSettings.isZoomControlsEnabled = true
+                    map.uiSettings.isIndoorLevelPickerEnabled = true
+                    map.uiSettings.isMapToolbarEnabled = true
+                    map.uiSettings.isZoomGesturesEnabled = false
+                    map.uiSettings.setAllGesturesEnabled(true)
                     emmiter.onComplete()
                 }
             }
@@ -298,5 +328,9 @@ class MainActivity : BaseActivity<MainPresenter>(), MainUi,
             Snackbar.make(findViewById(android.R.id.content), error, Snackbar.LENGTH_LONG)
         snackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorRed))
         snackbar.show()
+    }
+
+    override fun showToast(label: Int) {
+        Toast.makeText(this, label, Toast.LENGTH_LONG).show()
     }
 }

@@ -73,7 +73,7 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
     }
 
     fun onSaveLocationClicked(point: LatLng?) {
-        if (point != null) {
+        if (point != null && !point.isEmpty()) {
 
             compositeDisposable.add(
                 dataInteractor?.countLocations()?.subscribeOn(Schedulers.io())
@@ -90,9 +90,10 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
                         }
                     ) { ui()?.showSaveError(R.string.activityMain_save_location_error) }
             )
-
-
+        } else {
+            ui()?.showToast(R.string.activityMain_save_empty_location)
         }
+
     }
 
     private fun save(point: LatLng) {
@@ -113,6 +114,10 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
                 )
             }
         })
+    }
+
+    fun onGoToAppGalleryClicked(){
+        router.gotoAppGallery()
     }
 
     fun onButtonClicked(position: LatLng?) {
@@ -141,4 +146,6 @@ class MainPresenter(uiRef: MainUi, router: Router, appComponent: AppComponent?) 
         super.onDestroy()
         compositeDisposable.dispose()
     }
+
+    fun LatLng.isEmpty() = this.latitude == 0.0 && this.longitude == 0.0
 }

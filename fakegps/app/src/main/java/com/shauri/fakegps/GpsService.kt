@@ -10,10 +10,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.os.Build
 import android.os.IBinder
 import android.os.SystemClock
-import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -24,6 +22,7 @@ import com.shauri.fakegps.ui.main.MainActivity
 import com.shauri.fakegps.ui.router.SERVICE_DATA
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -45,7 +44,7 @@ class GpsService : Service() {
 
     @SuppressLint("MissingPermission")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("CCC", "on start command")
+        Timber.d("on start command")
         data = intent?.getParcelableExtra(SERVICE_DATA) as ServiceData
         lat = data.point?.latitude ?: 0.0
         lon = data.point?.longitude ?: 0.0
@@ -120,7 +119,7 @@ class GpsService : Service() {
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channelName: CharSequence = "asdasd"
+        val channelName: CharSequence = "Main"
         val notificationChannel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
             channelName,
@@ -160,20 +159,14 @@ class GpsService : Service() {
 
         mockLocation.altitude = loc.altitude
         mockLocation.accuracy = data.accuracy.toFloat()
+        mockLocation.bearingAccuracyDegrees = 0.1f
+        mockLocation.verticalAccuracyMeters = 0.1f
+        mockLocation.speedAccuracyMetersPerSecond = 0.01f
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mockLocation.bearingAccuracyDegrees = 0.1f
-            mockLocation.verticalAccuracyMeters = 0.1f
-            mockLocation.speedAccuracyMetersPerSecond = 0.01f
-        }
-
-
-        Log.d("CCC", "mocking ...");
         disposable = Observable.interval(data.interval.toLong(), TimeUnit.SECONDS).subscribe {
 
             lat = lat?.plus(getDeltaLat())
             lon = lon?.plus(getDeltaLon())
-            Log.d("CCC", "mocking ..." + lat + " " + lon);
             mockLocation.latitude = lat ?: 0.0
             mockLocation.longitude = lon ?: 0.0
             mockLocation.time = System.currentTimeMillis()
@@ -186,9 +179,7 @@ class GpsService : Service() {
             }
         }
 
-
     }
-
 
     private fun getDeltaLat(): Double {
         if (data.mockMove) {

@@ -21,4 +21,5 @@ interface MainUi : BaseUi {
     fun setButtonBackground(@AttrRes background: Int)
     fun setPinVisibility(visibility: Int)
     fun showTooMuchLocations(max:Int)
+    fun showToast(@StringRes label:Int)
 }

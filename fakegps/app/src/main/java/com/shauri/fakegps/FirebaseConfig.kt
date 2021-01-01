@@ -40,6 +40,6 @@ class FirebaseConfig (){
 
 
     fun getMinVer(): String? {
-        return remoteConfig?.getString("min_ver");
+        return remoteConfig?.getString("min_version");
     }
 }
