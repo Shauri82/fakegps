@@ -1,6 +1,7 @@
 package com.shauri.fakegps.ui.about
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.View
 import com.shauri.fakegps.R
 import com.shauri.fakegps.dependency.AppComponent
@@ -22,6 +23,7 @@ class AboutActivity : BaseActivity<AboutPresenter>(), AboutUi {
         }
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar()?.setDisplayShowHomeEnabled(true);
+        activityAbout_tvTerms.setMovementMethod(LinkMovementMethod.getInstance())
     }
 
     override fun setVersion(ver: String) {

@@ -88,6 +88,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/activityAbout_tvs1">
 
                 <TextView
+                    android:id="@+id/activityAbout_tvTerms"
                     style="@style/Text.Normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

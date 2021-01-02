@@ -69,5 +69,5 @@
         It helps to mock current user location provided by Huawei Mobile Services(HMS) and Google Mobile Services(GMS).
         Note: some mobile device models do not support HMS or GMS services and will not be able to run location mocking service. </string>
     <string name="activityAbout_s2">This software is provided without warranty of any kind. Use it at your own risk.
-        Note that after using this software you may find your location locked at last mocked location.</string>
+        Note that after using this software you may find your location locked at last mocked location. Please read our <a href="https://sites.google.com/view/fakegps-termsconditions/">Terms &amp; Conditions</a></string>
 </resources>
